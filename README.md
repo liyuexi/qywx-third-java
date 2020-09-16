@@ -2,6 +2,7 @@
 企业微信开发第三方应用开发java版
 
 企业微信第三方应用授权公司表
+
 ```CREATE TABLE `qywx_third_company` (
  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
  `corp_id` varchar(45) NOT NULL DEFAULT '' COMMENT '企业id',
