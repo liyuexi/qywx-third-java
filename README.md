@@ -2,7 +2,7 @@
 企业微信开发第三方应用开发java版
 
 企业微信第三方应用授权公司表
-CREATE TABLE `qywx_third_company` (
+```CREATE TABLE `qywx_third_company` (
  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
  `corp_id` varchar(45) NOT NULL DEFAULT '' COMMENT '企业id',
  `permanent_code` varchar(512) NOT NULL DEFAULT '' COMMENT '企业永久授权码',
@@ -15,4 +15,4 @@ CREATE TABLE `qywx_third_company` (
  `modtime` int(10) unsigned DEFAULT '0' COMMENT '修改时间',
  `rectime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '变动时间',
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='企业微信三方应用授权公司'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='企业微信三方应用授权公司'```
