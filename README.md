@@ -1,5 +1,9 @@
 # qywx-third-java
-企业微信开发第三方应用开发java版
+
+## 企业微信开发指南
+https://github.com/liyuexi/qywx-guide
+
+## 企业微信开发第三方应用开发java版
 
 企业微信第三方应用授权公司表
 
