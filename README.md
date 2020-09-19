@@ -17,9 +17,9 @@ demo基于springboot；
 
 1，回调url
 数据回调URL	http://xx.xx.com:9900/callback/data
-指令回调URL	http://xx.xx.com:9900/callback/data
+指令回调URL	http://xx.xx.com:9900/callback/instruct
 
-2，应用入口
+2，服务商应用安装入口
 http://xx.xx.:9900/app/index
 
 其它问题的可以看视频教程
