@@ -13,12 +13,29 @@ public class QywxThirdConfig {
     private String token;
     private String encodingAESKey;
     private Integer authType;
-    private String servieUrl = "https://qyapi.weixin.qq.com/cgi-bin/service/";
+    private String baseUrl = "https://qyapi.weixin.qq.com/cgi-bin/";
+    private String servieUrl = baseUrl+"service/";
     private String suiteTokenUrl = servieUrl+"get_suite_token";
     private String preAuthCodeUrl = servieUrl+"get_pre_auth_code?suite_access_token={suite_access_token}";
     private String permanentCodeUrl = servieUrl+"get_permanent_code?suite_access_token=%s";
     private String sessionInfoUrl = servieUrl+"set_session_info?suite_access_token=%s";
     private String installUrl = "https://open.work.weixin.qq.com/3rdapp/install?suite_id=%s&pre_auth_code=%s&redirect_uri=%s&state=STATE";
+
+    private String corpTokenUrl = servieUrl+"get_corp_token?suite_access_token=%s";
+    private String departmentUrl = baseUrl+"department/list?access_token={access_token}&id={id}";
+    private String userSimplelist = baseUrl+"user/simplelist?access_token={access_token}&department_id={department_id}&fetch_child={fetch_child}}";
+
+    public String getUserSimplelist() {
+        return userSimplelist;
+    }
+
+    public String getCorpTokenUrl() {
+        return corpTokenUrl;
+    }
+
+    public String getDepartmentUrl() {
+        return departmentUrl;
+    }
 
     public String getSuiteTokenUrl() {
         return suiteTokenUrl;

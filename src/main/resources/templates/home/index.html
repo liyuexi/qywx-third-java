@@ -3,11 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style type="text/css">
+        body {
+          padding-top: 50px;
+        }
+        .starter-template {
+          padding: 40px 15px;
+          text-align: center;
+        }
+    </style>
 </head>
 <body>
 
-tobdev应用首页
-<a  th:href="${installUrl}"> 安装tobdev </a>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">切换</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">ToB Dev</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">应用主页</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="starter-template">
+        <h2>企业微信开发第三方应用开发篇</h2>
+        <p>
+            suit_ticket(每十分钟推一次)：
+            <div   th:text="${suite_ticket}">  </div>
+        </p>
+        <br/>
+        <p>
+            第三方应用凭证suit_acess_token：
+            <div   th:text="${suite_access_token}">  </div>
+        </p>
+        <br/>
+        <p>
+            预授权码pre_auth_code：
+        <div   th:text="${pre_auth_code}">  </div>
+        </p>
+        <br/>
+        <p>
+            授权安装链接：
+            <a  th:href="${installUrl}" th:text="${installUrl}">  </a>
+        </p>
+        <br/>
+        <p>
+            获取企业access_token：
+            <div th:text="${corp_access_token}">  </div>
+        </p>
+        <br/>
+        <p>
+            通讯录(应用secret)获取部门：
+        <a  target="_blank" href="http://localhost:9900/contact/department?id=0"> 点击获取 </a>
+        </p>
+        <br/>
+        <p>
+            通讯录(应用secret)获取部门成员：
+            <a  target="_blank" href="http://localhost:9900/contact/user?department_id=3"> 点击获取 </a>
+        </p>
+        <br/>
+        <p>
+            通讯录(应用secret)读取成员：
+            <a  >  </a>
+        </p>
+        <br/>
+        <p>
+            获取通讯录(讯录管理secret)：
+        <p>
+            通讯录(应用secret)获取部门：
+             <a >  </a>
+        </p>
+        <br/>
+        </p>
+        <br/>
+
+        <br/>   <br/>   <br/>   <br/>   <br/>   <br/>   <br/>  <br/>   <br/>   <br/>  <br/>   <br/>   <br/>
+        <br/>   <br/>   <br/>
+        <h2>ToB Dev李月喜，企业微信开发第三方应用开发篇demo的java版</h2>
+
+        <p class="lead">demo运行有任何问题，可随时通过公众号ToB Dev联系到我</p>
+    </div>
+
+
+
+
+</div><!-- /.container -->
+
+<!-- Bootstrap core JavaScript
+  ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </body>
 </html>

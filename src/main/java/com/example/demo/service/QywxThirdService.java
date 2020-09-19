@@ -77,6 +77,42 @@ public class QywxThirdService {
         return true;
     }
 
+    public Map getDepartmentList(String id){
+
+        String corpToken = getCorpAccessToken();
+        //获取预授权码
+        Map paramsMap = new HashMap();
+        paramsMap.put("access_token",corpToken);
+        paramsMap.put("id",id);
+        logger.error(paramsMap.toString());
+        logger.error(qywxThirdConfig.getDepartmentUrl());
+        Map response = qywxThirdHttpClient.getForObject(qywxThirdConfig.getDepartmentUrl(),Map.class,paramsMap);
+        //获取错误日志
+        logger.error(response.toString());
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        return response;
+    }
+
+    public Map getUserSimplelist(String id,String fetch_child){
+
+        String corpToken = getCorpAccessToken();
+        //获取预授权码
+        Map paramsMap = new HashMap();
+        paramsMap.put("access_token",corpToken);
+        paramsMap.put("department_id",id);
+        paramsMap.put("fetch_child",fetch_child);
+        Map response = qywxThirdHttpClient.getForObject(qywxThirdConfig.getUserSimplelist(),Map.class,paramsMap);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        return response;
+    }
+
+
+
     public String getVerify(String sVerifyMsgSig,String sVerifyTimeStamp,
                          String sVerifyNonce,String sVerifyEchoStr){
 
@@ -248,7 +284,7 @@ public class QywxThirdService {
     }
 
     //suite_ticket获取
-    private String getSuitTicket(){
+    public String getSuitTicket(){
         String result = strRedis.get("suite_ticket");
         if(result==""){
             logger.error("suit_ticket为空");
@@ -256,7 +292,7 @@ public class QywxThirdService {
         return result;
     }
 
-    private String  getSuiteToken(){
+    public String  getSuiteToken(){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         //方式一直接json字符串
@@ -282,7 +318,7 @@ public class QywxThirdService {
         return result;
     }
 
-    private String getPreAuthCode(){
+    public String getPreAuthCode(){
         String result = "";
         String token = getSuiteToken();
         //获取预授权码
@@ -324,5 +360,28 @@ public class QywxThirdService {
         }
         return  true;
     }
+
+    public String getCorpAccessToken(){
+
+        QywxThirdCompany company = qywxThirdCompanyRep.findById(1).get();
+        String  suiteToken = getSuiteToken();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        JSONObject postJson = new JSONObject();
+        postJson.put("auth_corpid",company.getCorpId());
+        postJson.put("permanent_code",company.getPermanentCode());
+        HttpEntity request = new HttpEntity(postJson.toString(),headers);
+        String  corpTokenUrl =  String.format(qywxThirdConfig.getCorpTokenUrl(),suiteToken);
+        Map response = qywxThirdHttpClient.postForObject(corpTokenUrl,request ,Map.class);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        String result = (String) response.get("access_token");
+        return result;
+
+    }
+
+
 
 }

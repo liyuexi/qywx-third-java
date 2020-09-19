@@ -16,9 +16,18 @@ public class Home {
 
     @RequestMapping("/app/index")
     String index(ModelMap model){
+        model.put("suite_ticket",qywxThirdService.getSuitTicket());
+        model.put("suite_access_token",qywxThirdService.getSuiteToken());
+        model.put("pre_auth_code",qywxThirdService.getPreAuthCode());
+        model.put("corp_access_token",qywxThirdService.getCorpAccessToken());
+
+
         String redirectUrl = "http://tobdev.ant-xy.com:9900/app/install";
         String installUrl = qywxThirdService.getInstallUrl(redirectUrl);
         model.put("installUrl",installUrl);
+
+        model.put("xx",qywxThirdService.getPreAuthCode());
+
         return  "home/index";
     }
 
