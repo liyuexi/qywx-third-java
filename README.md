@@ -3,7 +3,13 @@
 ## 企业微信开发指南
 https://github.com/liyuexi/qywx-guide
 
-## 企业微信开发第三方应用开发java版
+### 企业微信开发第三方应用开发
+
+视频：
+https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=1503367187451936773&__biz=MzA5ODcyODY0Nw==#wechat_redirect
+
+
+### 企业微信开发第三方应用开发java版
 
 企业微信第三方应用授权公司表
 
