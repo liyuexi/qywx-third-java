@@ -36,9 +36,9 @@ redis:
         min-idle: 2
 
 qywx-Third:
-    corpId: wwae6d661c97e24e98
-    suiteId: wwd0a77c3eb62b965c
-    suiteSecret: 0C8maOs57u7e4qmTh13NAJUCvpMDwihLg4XYEn3MsvE
-    token: ojF7qraz6kwgefFDJh6tKhZvDtokP9L
-    encodingAESKey: Z6Cb64Q6GbDcmuqrILUSlCy5e1o2aZYkB226RimVFpw
-    authType: 1
+    corpId: 使用自己公司的corpid
+    suiteId: 使用服务商应用的suiteid
+    suiteSecret: 使用服务商应用的密钥
+    token: 使用服务商应用token
+    encodingAESKey: 使用服务商应用AESKey
+    authType: 1 
