@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -80,7 +81,6 @@ public class QywxThirdService {
     public Map getDepartmentList(String id){
 
         String corpToken = getCorpAccessToken();
-        //获取预授权码
         Map paramsMap = new HashMap();
         paramsMap.put("access_token",corpToken);
         paramsMap.put("id",id);
@@ -98,7 +98,6 @@ public class QywxThirdService {
     public Map getUserSimplelist(String id,String fetch_child){
 
         String corpToken = getCorpAccessToken();
-        //获取预授权码
         Map paramsMap = new HashMap();
         paramsMap.put("access_token",corpToken);
         paramsMap.put("department_id",id);
@@ -111,6 +110,49 @@ public class QywxThirdService {
         return response;
     }
 
+    public String getOauthUrl(String url){
+//        应用授权作用域。
+//        snsapi_base：静默授权，可获取成员的基础信息（UserId与DeviceId）；
+//        snsapi_userinfo：静默授权，可获取成员的详细信息，但不包含手机、邮箱等敏感信息；
+//        snsapi_privateinfo：手动授权，可获取成员的详细信息，包含手机、邮箱等敏感信息（已不再支持获取手机号/邮箱）。
+        String scope = "snsapi_userinfo";
+        String state = "sdfds343";
+        String result = String.format(qywxThirdConfig.getOauthUrl(),qywxThirdConfig.getSuiteId(),url,scope,state);
+        return  result;
+    }
+
+    public Map getOauthUser(String code){
+
+        String suiteToken = getSuiteToken();
+        //获取访问用户身份
+        Map paramsMap = new HashMap();
+        paramsMap.put("suite_access_token",suiteToken);
+        paramsMap.put("code",code);
+        Map response = qywxThirdHttpClient.getForObject(qywxThirdConfig.getOauthUser(),Map.class,paramsMap);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+            String userTicket = (String) response.get("user_ticket");
+            //获取访问用户敏感信息
+            //通过auth code获取公司信息及永久授权码
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            JSONObject postJson = new JSONObject();
+            postJson.put("user_ticket",userTicket);
+            HttpEntity request = new HttpEntity(postJson.toString(),headers);
+            String url = String.format(qywxThirdConfig.getOauthUserDetail(),suiteToken);
+            Map detaiResponse = qywxThirdHttpClient.postForObject(url,request ,Map.class);
+            //获取错误日志
+            if(detaiResponse.containsKey("errcode") && (Integer) detaiResponse.get("errcode") != 0){
+                logger.error(detaiResponse.toString());
+            }
+
+            return detaiResponse;
+        }{
+            return response;
+        }
+
+    }
 
 
     public String getVerify(String sVerifyMsgSig,String sVerifyTimeStamp,
@@ -362,8 +404,17 @@ public class QywxThirdService {
     }
 
     public String getCorpAccessToken(){
+        String result = "";
+        QywxThirdCompany company;
+        Optional<QywxThirdCompany> optional= qywxThirdCompanyRep.findById(1);
+        if(optional!=null && optional.isPresent()){
+            company = optional.get();
+        }else{
+            logger.info("无授权公司信息");
+            return  "";
+        }
 
-        QywxThirdCompany company = qywxThirdCompanyRep.findById(1).get();
+        logger.info(company.toString());
         String  suiteToken = getSuiteToken();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -376,8 +427,10 @@ public class QywxThirdService {
         //获取错误日志
         if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
             logger.error(response.toString());
+        }else{
+            result = (String) response.get("access_token");
         }
-        String result = (String) response.get("access_token");
+
         return result;
 
     }

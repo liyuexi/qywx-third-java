@@ -24,6 +24,23 @@ public class QywxThirdConfig {
     private String corpTokenUrl = servieUrl+"get_corp_token?suite_access_token=%s";
     private String departmentUrl = baseUrl+"department/list?access_token={access_token}&id={id}";
     private String userSimplelist = baseUrl+"user/simplelist?access_token={access_token}&department_id={department_id}&fetch_child={fetch_child}}";
+    private String userDetail = baseUrl+"user/get?access_token={access_token}&userid={user_id}";
+
+    //scope应用授权作用域。
+    //snsapi_base：静默授权，可获取成员的基础信息（UserId与DeviceId）；
+    //snsapi_userinfo：静默授权，可获取成员的详细信息，但不包含手机、邮箱等敏感信息；
+    //snsapi_privateinfo：手动授权，可获取成员的详细信息，包含手机、邮箱等敏感信息（已不再支持获取手机号/邮箱）。
+    //https://work.weixin.qq.com/api/doc/90001/90143/91120
+    private String oauthUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
+    //https://work.weixin.qq.com/api/doc/90001/90143/91121
+    private String oauthUser = servieUrl+"getuserinfo3rd?suite_access_token={suite_access_token}&code={code}";
+    //https://work.weixin.qq.com/api/doc/90001/90143/91122
+    private String oauthUserDetail = servieUrl+"getuserdetail3rd?suite_access_token={suite_access_token}";
+
+
+    public String getOauthUrl() {
+        return oauthUrl;
+    }
 
     public String getUserSimplelist() {
         return userSimplelist;
@@ -79,6 +96,18 @@ public class QywxThirdConfig {
 
     public Integer getAuthType() {
         return authType;
+    }
+
+    public String getUserDetail() {
+        return userDetail;
+    }
+
+    public String getOauthUser() {
+        return oauthUser;
+    }
+
+    public String getOauthUserDetail() {
+        return oauthUserDetail;
     }
 
     public void setCorpId(String corpId) {
