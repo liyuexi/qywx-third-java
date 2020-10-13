@@ -406,7 +406,7 @@ public class QywxThirdService {
     public String getCorpAccessToken(){
         String result = "";
         QywxThirdCompany company;
-        Optional<QywxThirdCompany> optional= qywxThirdCompanyRep.findById(1);
+        Optional<QywxThirdCompany> optional= qywxThirdCompanyRep.findTopByOrderByIdDesc();
         if(optional!=null && optional.isPresent()){
             company = optional.get();
         }else{
