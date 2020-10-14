@@ -5,11 +5,13 @@ import com.example.demo.com.qq.weixin.mp.aes.AesException;
 import com.example.demo.com.qq.weixin.mp.aes.WXBizMsgCrypt;
 import com.example.demo.config.QywxThirdConfig;
 import com.example.demo.dao.QywxThirdCompany;
-import com.example.demo.dao.QywxThirdCompanyRepository;
+import com.example.demo.util.QywxJsonStorage;
+import com.example.demo.util.QywxSHA;
 import com.example.demo.util.RedisOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,9 +24,12 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.example.demo.dao.QywxThirdCompanyRepository;
 import java.util.Optional;
 
 
@@ -41,6 +46,16 @@ public class QywxThirdService {
     private RedisOperator strRedis;
     @Autowired
     private QywxThirdCompanyRepository qywxThirdCompanyRep;
+
+    @Autowired
+    private QywxJsonStorage qywxJsonStorage;
+    @Value("${qywx-storage.jsonStoragePath}")
+    private File jsonStoragePath;
+    @Value("${qywx-storage.storageType}")
+    private Integer storageType;
+
+
+
 
     public String getInstallUrl(String url){
         String preAuthCode= getPreAuthCode();
@@ -74,7 +89,7 @@ public class QywxThirdService {
         company.setPermanentCode((String) data.get("permanent_code"));
         Map authCorpInfo =(Map) data.get("auth_corp_info");
         company.setCorpId((String) authCorpInfo.get("corpid")) ;
-        qywxThirdCompanyRep.save(company);
+//        qywxThirdCompanyRep.save(company);
         return true;
     }
 
@@ -128,7 +143,7 @@ public class QywxThirdService {
         Map paramsMap = new HashMap();
         paramsMap.put("suite_access_token",suiteToken);
         paramsMap.put("code",code);
-        Map response = qywxThirdHttpClient.getForObject(qywxThirdConfig.getOauthUser(),Map.class,paramsMap);
+        Map response = qywxThirdHttpClient.getForObject(qywxThirdConfig.getOauthUserUrl(),Map.class,paramsMap);
         //获取错误日志
         if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
             logger.error(response.toString());
@@ -140,7 +155,7 @@ public class QywxThirdService {
             JSONObject postJson = new JSONObject();
             postJson.put("user_ticket",userTicket);
             HttpEntity request = new HttpEntity(postJson.toString(),headers);
-            String url = String.format(qywxThirdConfig.getOauthUserDetail(),suiteToken);
+            String url = String.format(qywxThirdConfig.getOauthUserDetailUrl(),suiteToken);
             Map detaiResponse = qywxThirdHttpClient.postForObject(url,request ,Map.class);
             //获取错误日志
             if(detaiResponse.containsKey("errcode") && (Integer) detaiResponse.get("errcode") != 0){
@@ -154,6 +169,29 @@ public class QywxThirdService {
 
     }
 
+    public HashMap getJsSign(String nonce, String timestamp,  String url) throws  Exception{
+
+        HashMap result = new HashMap();
+        //获取jsticket
+        String corpToken = getCorpAccessToken();
+        Map paramsMap = new HashMap();
+        paramsMap.put("access_token",corpToken);
+        Map response = qywxThirdHttpClient.getForObject(qywxThirdConfig.getJsapiTicketUrl(),Map.class,paramsMap);
+        //获取错误日志
+        logger.error(response.toString());
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        String jsapiTicket = (String) response.get("ticket");
+
+        String sign = QywxSHA.getSHA1(jsapiTicket,nonce,timestamp,url);
+        result.put("appId", qywxThirdConfig.getCorpId());
+        result.put("timestamp", timestamp);
+        result.put("nonceStr", nonce);
+        result.put("signature", sign);
+        return  result;
+
+    }
 
     public String getVerify(String sVerifyMsgSig,String sVerifyTimeStamp,
                          String sVerifyNonce,String sVerifyEchoStr){
@@ -317,17 +355,30 @@ public class QywxThirdService {
         return  result;
     }
 
+
     //suite_ticket缓存
     private String setSuitTicket(Element root){
         NodeList nodelist = root.getElementsByTagName("SuiteTicket");
         String result = nodelist.item(0).getTextContent();
-        strRedis.set("suite_ticket",result,600);
+        if(storageType == 1){
+            strRedis.set("suite_ticket",result,600);
+        }else {
+            Map tokenMap = new HashMap();
+            tokenMap.put("suite_ticket", result);
+            qywxJsonStorage.writeJson(jsonStoragePath, tokenMap);
+        }
         return result;
     }
 
     //suite_ticket获取
     public String getSuitTicket(){
-        String result = strRedis.get("suite_ticket");
+        String result;
+        if(storageType == 1){
+             result = strRedis.get("suite_ticket");
+        }else{
+            Map tokenMap =  qywxJsonStorage.readJson(jsonStoragePath,Map.class);
+            result =  (String) tokenMap.get("suite_ticket");
+        }
         if(result==""){
             logger.error("suit_ticket为空");
         }
@@ -344,7 +395,7 @@ public class QywxThirdService {
 //                "    \"suite_ticket\": \"xxxx\" \n" +
 //                "}";
 //        HttpEntity request = new HttpEntity(postStr,headers);
-        //方式二 json对象转字符串
+        //方式二 对象转字符串j
         String  suiteTicket = getSuitTicket();
         JSONObject postJson = new JSONObject();
         postJson.put("suite_id",qywxThirdConfig.getSuiteId());
