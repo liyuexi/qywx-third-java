@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title></title>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=2.0" />
+    <style>
+        table { border-collapse: collapse;width:99%;table-layout:fixed;word-wrap:break-word;word-break:break-all}
+        table,table tr th, table tr td { border:1px solid #000000; }
+    </style>
+
+</head>
+<body>
+<table  align="center"/>
+<caption>H5应用首页（未登录状态）</caption>
+<tr>
+    <th align="left" valign="middle">项</th>
+    <th align="left" valign="middle">值/链接</th>
+    <th align="left" valign="middle">文档</th>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">网页授权登录链接</td>
+    <td align="left" valivalign="center">  <a target="_blank" th:href="${oauth_url}" th:text="${oauth_url}">  </a> </div></td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://work.weixin.qq.com/api/doc/90001/90143/91118">https://work.weixin.qq.com/api/doc/90001/90143/91118</a></td>
+</tr>
+</table>
+
+<div th:insert="~{contact :: contact}"></div>
+
+</body>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tobdev.qywxthird.mapper.QywxThirdDepartmentMapper">
+
+    <sql id="department_base">
+        corp_id
+    </sql>
+
+    <insert id="saveDepartment"  parameterType="QywxThirdDepartment" useGeneratedKeys="true" keyColumn="id" keyProperty="id" >
+        INSERT INTO `qywx_third_department`( `corp_id`, `permanent_code`,`corp_name`,`corp_full_name`,`subject_type`) VALUES (#{corpId,jdbcType=VARCHAR},#{permanentCode,jdbcType=VARCHAR},#{corpName,jdbcType=VARCHAR},#{corpFullName,jdbcType=VARCHAR},#{subjectType,jdbcType=INTEGER})
+    </insert>
+
+    <select id="getDepartmentByCorpId" resultType="com.tobdev.qywxthird.model.entity.QywxThirdDepartment">
+        select * from qywx_third_department where corp_id = #{corp_id} and status=1 order by id desc limit 1
+    </select>
+
+    <update id="deleteDepartmentByCorpId">
+        update qywx_third_department set status=-1 where corp_id = #{corp_id} and status=1 order by id desc limit 1
+    </update>
+    
+
+</mapper>

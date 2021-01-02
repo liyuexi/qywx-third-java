@@ -1,0 +1,60 @@
+server:
+    port: 9900
+
+spring:
+    devtools:
+        restart:
+            enable: true
+            additional-paths: src/main/java
+        livereload:
+            enable: true
+            port: 35729
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/qywx_third_demo_h5?useUnicode=true&characterEncoding=utf-8&useSSL=false
+        username: root
+        password:
+
+    redis:
+        ## Redis数据库索引（默认为0）
+        database: 0
+        ## Redis服务器地址
+        host: 127.0.0.1
+        ## Redis服务器连接端口
+        port: 6379
+        ## Redis服务器连接密码（默认为空）
+        password:
+        timeout: 10
+        pool:
+            max-active: 1000
+            max-wait: 1
+            max-idle: 10
+            min-idle: 2
+
+mybatis:
+    configuration:
+        ##控制台sql
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+        ##数据库字段下划线与驼峰
+        map-underscore-to-camel-case: true
+        ##mapper扫码路径
+    mapper-locations: classpath:mapper/*.xml
+    ##xml配置别名
+    type-aliases-package: com.tobdev.qywxthird.model.entity
+
+
+#H5
+qywx-third:
+    corpId: "wwae6d661c97e24e98"
+    providerSecret: "Vb316P2abRv8isjpbHvvXFPG5DgbVdVmCPqZqjWoZt1j9VcV7e2A67t2a1YlxlAg"
+    suiteId: "wwac74d21419a018c5"
+    suiteSecret: "QyYjPSRr-ZvntyqoINmEz2BSDLxp-MKjisEmGzEs5zI"
+    token: "jL8g6TMW4mEMB"
+    encodingAESKey: "Oixs6EbJTfEMNxh9yeGMemnhBgkEW7aqDtIx7RxEQVk"
+    authType: 1
+    #推广码id 需先上线
+    templateId: ""
+
+qywx-cache:
+    keyPrefix: "h5-"
+    suitTicket: "suite-ticket"

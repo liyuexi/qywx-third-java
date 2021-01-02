@@ -1,0 +1,56 @@
+<html>
+<head>
+    <title></title>
+    <style>
+        table { border-collapse: collapse;width:90%;table-layout:fixed;word-wrap:break-word;word-break:break-all}
+        table,table tr th, table tr td { border:1px solid #000000; }
+    </style>
+</head>
+<body>
+<table  align="center"/>
+    <caption>服务商官网应用主页</caption>
+    <tr>
+        <th align="left" valign="middle">项</th>
+        <th align="left" valign="middle">值/链接</th>
+        <th align="left" valign="middle">文档</th>
+    </tr>
+    <tr>
+        <td align="left" valivalign="center">推送suit_ticket</td>
+        <td align="left" valivalign="center"> <div   th:text="${suite_ticket}">  </div></td>
+        <td align="left" valivalign="center"> <a target="_blank" href="https://work.weixin.qq.com/api/doc/90001/90143/90628">https://work.weixin.qq.com/api/doc/90001/90143/90628</a></td>
+    </tr>
+
+    <tr>
+        <td align="left" valivalign="center">第三方应用凭证suit_acess_token</td>
+        <td align="left" valivalign="center"><div  th:text="${suite_access_token}">  </div></td>
+        <td align="left" valivalign="center"></td>
+    </tr>
+
+    <tr>
+        <td align="left" valivalign="center">预授权码pre_auth_code</td>
+        <td align="left" valivalign="center"><div th:text="${pre_auth_code}">  </div></td>
+        <td align="left" valivalign="center"><a target="_blank" href="https://work.weixin.qq.com/api/doc/90001/90143/90601">https://work.weixin.qq.com/api/doc/90001/90143/90601</a></td>
+    </tr>
+    <tr>
+        <td align="left" valivalign="center">授权安装链接</td>
+        <td align="left" valivalign="center"><a target="_blank" th:href="${install_url}" th:text="${install_url}">  </a></td>
+        <td align="left" valivalign="center"><a target="_blank" href="https://work.weixin.qq.com/api/doc/90001/90143/90597">https://work.weixin.qq.com/api/doc/90001/90143/90597</a></td>
+    </tr>
+    <tr>
+        <td align="left" valivalign="center">扫码登录链接(第三方单点登录)</td>
+        <td align="left" valivalign="center"><a target="_blank" th:href="${oauth_url}" th:text="${oauth_url}">  </a></td>
+        <td align="left" valivalign="center"><a target="_blank" href="https://work.weixin.qq.com/api/doc/90001/90143/91123">https://work.weixin.qq.com/api/doc/90001/90143/91123</a></td>
+    </tr>
+
+    <tr>
+        <td align="left" valivalign="center">推广码注册</td>
+        <td align="left" valivalign="center"><a target="_blank" th:href="${register_url}" th:text="${register_url}">  </a></td>
+        <td align="left" valivalign="center"><a target="_blank" href="https://work.weixin.qq.com/api/doc/90001/90143/90578">https://work.weixin.qq.com/api/doc/90001/90143/91123</a></td>
+    </tr>
+
+</table>
+
+
+<div th:insert="~{contact :: contact}"></div>
+
+</body>
