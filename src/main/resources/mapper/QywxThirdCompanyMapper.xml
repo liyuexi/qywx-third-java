@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tobdev.qywxthird.mapper.QywxThirdCompanyMapper">
+
+    <sql id="company_base">
+        corp_id
+    </sql>
+
+    <insert id="saveCompany"  parameterType="QywxThirdCompany" useGeneratedKeys="true" keyColumn="id" keyProperty="id" >
+        INSERT INTO `qywx_third_company`( `corp_id`, `permanent_code`,`corp_name`,`corp_full_name`,`subject_type`,`agent_id`,`status`) VALUES (#{corpId,jdbcType=VARCHAR},#{permanentCode,jdbcType=VARCHAR},#{corpName,jdbcType=VARCHAR},#{corpFullName,jdbcType=VARCHAR},#{subjectType,jdbcType=INTEGER},#{agentId,jdbcType=INTEGER},#{status,jdbcType=INTEGER})
+    </insert>
+
+    <select id="getCompanyBaseByCorpId" resultType="com.tobdev.qywxthird.model.entity.QywxThirdCompany">
+        select <include refid="company_base" /> from qywx_third_company where corp_id = #{corp_id} and status=1 order by id desc limit 1
+    </select>
+
+    <select id="getCompanyByCorpId" resultType="com.tobdev.qywxthird.model.entity.QywxThirdCompany">
+        select * from qywx_third_company where corp_id = #{corp_id} and status=1 order by id desc limit 1
+    </select>
+
+    <update id="deleteCompanyByCorpId">
+        update qywx_third_company set status=-1 where corp_id = #{corp_id} and status=1 order by id desc limit 1
+    </update>
+
+    <update id="updateCompany" parameterType="QywxThirdCompany">
+        update `qywx_third_company`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="permanentCode != null "> permanent_code = #{permanent_code,jdbcType=VARCHAR}, </if>
+        where
+        corp_id = #{corp_id,jdbcType=VARCHAR}
+        </trim>
+    </update>
+
+
+</mapper>

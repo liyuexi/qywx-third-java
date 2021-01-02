@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <title>WWOpenData 实例页面</title>
+    <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script type="text/javascript" src="//open.work.weixin.qq.com/wwopen/js/jwxwork-1.0.0.js"></script>
+    <script>
+        /**
+         * wx.config 参数
+         *
+         * @see https://open.work.weixin.qq.com/api/doc/90001/90144/90547
+         */
+         window.openidList = [
+            "[[${userId}]]"
+         ];
+        window.configParams = {
+           beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
+            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: "[[${signConfig.appId}]]", // 必填，企业微信的corpID
+            timestamp: "[[${signConfig.timestamp}]]", // 必填，生成签名的时间戳
+            nonceStr: "[[${signConfig.nonceStr}]]", // 必填，生成签名的随机串
+            signature: "[[${signConfig.signature}]]",// 必填，签名，见 附录-JS-SDK使用权限签名算法
+            jsApiList: ['chooseImage'] // 必填，需要使用的JS接口列表，凡是要调用的接口都需要传进来
+         };
+        /**
+         * wx.agentConfig 参数
+         *
+         * @see https://open.work.weixin.qq.com/api/doc/90001/90144/90548
+         */
+        window.agentConfigParams = {
+           corpid: "[[${signAgentConfig.corpId}]]", // 必填，企业微信的corpid，必须与当前登录的企业一致
+            agentid: "[[${signAgentConfig.agentId}]]", // 必填，企业微信的应用id （e.g. 1000247）
+            timestamp: "[[${signAgentConfig.timestamp}]]", // 必填，生成签名的时间戳
+            nonceStr:"[[${signAgentConfig.nonceStr}]]", // 必填，生成签名的随机串
+            signature: "[[${signAgentConfig.signature}]]",// 必填，签名，见附录-JS-SDK使用权限签名算法
+             jsApiList: ['selectExternalContact','openUserProfile','navigateToAddCustomer'], //必填
+         }
+
+
+        console.log(window.configParams);
+         console.log(window.agentConfigParams);
+    </script>
+</head>
+<body>
+<div id="container">
+    <div>安全控件展示页面</div>
+    <div>显示出前 100 名可见范围人员名单</div>
+</div>
+<script>
+        (async () => {
+            try {
+                console.info('WWOpenData demo start')
+                if (/MicroMessenger/i.test(navigator.userAgent)) {
+                    await config(window.configParams)
+                }
+                await agentConfig(window.agentConfigParams)
+                // 若一切正常，此时可以在 window 上看到 WWOpenData 对象
+                console.info('window.WWOpenData', window.WWOpenData)
+                if (WWOpenData.checkSession) {
+                    WWOpenData.checkSession({
+                        success() {
+                            console.info('open-data 登录态校验成功')
+                        },
+                        fail() {
+                            console.error('open-data 登录态过期')
+                        },
+                    })
+                }
+                if (WWOpenData.on) {
+                    /**
+                     * ww-open-data 元素数据发生变更时触发
+                     */
+                    WWOpenData.on('update', event => {
+                        const openid = event.detail.element.getAttribute('openid')
+                        console.info('渲染数据发生变更', openid, event.detail.hasData)
+                    })
+                    /**
+                     * ww-open-data 获取数据失败时触发
+                     */
+                    WWOpenData.on('error', () => {
+                        console.error('获取数据失败')
+                    })
+                }
+                /**
+                 * 创建 ww-open-data 元素
+                 */
+                const container = document.getElementById('container')
+                // 这里的 window.openidList 是该 demo 页面自行组织的数据，不具备普遍性
+                // 开发者进行开发时，需要自己拿到授权企业相对应的 openid
+                // 关于 openid 的定义与获得方式，可以关注文档注意事项的第 5 点
+                for (const openid of window.openidList) {
+                    const element = document.createElement('ww-open-data')
+                    element.setAttribute('type', 'userName')
+                    element.setAttribute('openid', openid)
+                    container.appendChild(element)
+                }
+                /**
+                 * 绑定 document 上全部的 ww-open-data 元素
+                 */
+                WWOpenData.bindAll(document.querySelectorAll('ww-open-data'))
+                console.info('WWOpenData demo end')
+            } catch (error) {
+                console.error('WWOpenData demo error', error)
+            }
+            /**
+             * 调用 wx.config
+             *
+             * @see https://open.work.weixin.qq.com/api/doc/90001/90144/90547
+             */
+            async function config(config) {
+                return new Promise((resolve, reject) => {
+                    console.info('wx.config', config)
+                    wx.config(config)
+                    wx.ready(resolve)
+                    wx.error(reject)
+                }).then(() => {
+                    console.info('wx.ready')
+                }, error => {
+                    console.error('wx.error', error)
+                    throw error
+                })
+            }
+            /**
+             * 调用 wx.agentConfig
+             *
+             * @see https://open.work.weixin.qq.com/api/doc/90001/90144/90548
+             */
+            async function agentConfig(config) {
+                return new Promise((success, fail) => {
+                    console.info('wx.agentConfig', config)
+                    wx.agentConfig({ ...config, success, fail })
+                }).then(res => {
+                    console.info('wx.agentConfig success', res)
+                    return res
+                }, error => {
+                    console.error('wx.agentConfig fail', error)
+                    throw error
+                })
+            }
+        })()
+    </script>
+</body>
+</html>

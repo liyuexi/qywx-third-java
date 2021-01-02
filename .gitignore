@@ -13,3 +13,8 @@ log/
 target/
 logs/
 !.mvn/wrapper/maven-wrapper.jar
+
+application-testh5.yml
+application-testxcx.yml
+application-prodh5.yml
+application-prodxcx.yml

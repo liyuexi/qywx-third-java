@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tobdev.qywxthird.mapper.QywxThirdUserMapper">
+
+    <select id="getUserByUserId" resultType="QywxThirdUser">
+        select * from qywx_third_user where corp_id = #{corp_id} and user_id= #{user_id} and status=1 order by id desc limit 1
+    </select>
+
+    <select id="getUserDetailByCorpIdUserId" resultType="QywxThirdUser">
+        select * from qywx_third_user where corp_id = #{corp_id} and user_id= #{user_id} and status=1 order by id desc limit 1
+    </select>
+
+<!--    useGeneratedKeys="true" keyColumn="id" keyProperty="id"-->
+    <insert id="saveUser"  parameterType="QywxThirdUser">
+        INSERT INTO `qywx_third_user`( `corp_id`, `user_id`,`name`,`avatar`,`status`) VALUES (#{corpId,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{avatar,jdbcType=VARCHAR},#{status,jdbcType=INTEGER})
+    </insert>
+
+    <insert id="saveUserList"  parameterType="QywxThirdUser">
+        INSERT INTO `qywx_third_user`( `corp_id`, `user_id`) VALUES
+        <foreach collection="list" item="user" index="index" separator=",">
+           (#{user.corpId,jdbcType=VARCHAR},#{user.userId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <update id="deleteUserByCorpId">
+        update qywx_third_user set status=-1 where corp_id = #{corp_id} and status=1 order by id desc limit 1
+    </update>
+
+    <resultMap id="UserResultMap" type="QywxThirdUser">
+        <id column="id" jdbcType="INTEGER" property="id"></id>
+        <result column="name" jdbcType="VARCHAR"></result>
+        <collection property="departmentList" ofType="QywxThirdCompany">
+            <id column="id" jdbcType="INTEGER" property="id"></id>
+            <result column="name" jdbcType="VARCHAR"></result>
+        </collection>
+    </resultMap>
+
+</mapper>
