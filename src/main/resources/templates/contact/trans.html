@@ -1,0 +1,93 @@
+<html>
+<head>
+    <title></title>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=2.0" />
+    <style>
+        table { border-collapse: collapse;width:99%;table-layout:fixed;word-wrap:break-word;word-break:break-all}
+        table,table tr th, table tr td { border:1px solid #000000; }
+    </style>
+
+    <script language=javascript>
+
+    　　var interval = self.setInterval("checkTransRs()", 500)
+    　　function checkTransRs() {
+
+            //步骤一:创建异步对象
+            var ajax = new XMLHttpRequest();
+            //步骤二:设置请求的url参数,参数一是请求的类型,参数二是请求的url,可以带参数,动态的传递参数starName到服务端
+            ajax.open('get', "[[${job_result_url}]]" );
+            //步骤三:发送请求
+            ajax.send();
+            //步骤四:注册事件 onreadystatechange 状态改变就会调用
+            ajax.onreadystatechange = function () {
+               if (ajax.readyState==4 &&ajax.status==200) {
+                //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
+            　　　　  console.log(ajax.responseText);//输入相应的内容
+                     let res = JSON.parse(ajax.responseText);
+                    //
+                     console.log(res.result);
+                     console.log(res.result.contact_id_translate);
+                     if(res.result && res.result.contact_id_translate){
+
+                          let a = document.getElementById("a_href");
+                           a.href = res.result.contact_id_translate.url;
+                         window.clearInterval(interval);
+                    }
+
+              　　}
+            }
+    　　}
+
+    </script>
+
+
+</head>
+<body>
+
+<table  align="center"/>
+<caption>通讯录转译相关</caption>
+<tr>
+    <th align="left" valign="middle">项</th>
+    <th align="left" valign="middle">值/链接</th>
+    <th align="left" valign="middle">文档</th>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">需上传转译文件路径</td>
+    <td align="left" valivalign="center"> <div th:text="${file_path}">  </div>  </td>
+    <td align="left" valivalign="center"> <a></a></td>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">转译文件上传后的mediaid</td>
+    <td align="left" valivalign="center"> <div th:text="${media_id}">  </div>  </td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90001/90143/91883" > 文档</a></td>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">mediaid转译jobid</td>
+    <td align="left" valivalign="center">  </a> <div th:text="${job_id}">  </div>   </td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90001/90143/91846" > 文档</a></td>
+</tr>
+
+
+<tr>
+    <td align="left" valivalign="center">查询转译结果链接</td>
+    <td align="left" valivalign="center">  <a target="_blank" th:href="${job_url}" th:text="${job_url}">  </a>  </div></td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90001/90143/91882">文档 </a></td>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">转译成功后文件下载链接</td>
+    <td align="left" valivalign="center">  <a  id = "a_href"target="_blank" href=""> 点击下载  </a>  </div></td>
+    <td align="left" valivalign="center"> </td>
+</tr>
+
+
+</table>
+
+<div th:insert="~{contact :: contact}"></div>
+
+
+</body>

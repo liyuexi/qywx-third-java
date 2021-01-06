@@ -7,6 +7,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponents;
@@ -69,6 +71,17 @@ public class RestUtils {
         return  uriBuilder.build(true).toUri();
     }
 
+    public static JSONObject upload(String url,MultiValueMap formParams){
+        RestTemplate restTemplate = new RestTemplate();
+        //设置表单提交
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formParams, headers);
+        ResponseEntity<JSONObject> responseEntity = restTemplate.postForEntity(url,request,JSONObject.class);
+        serverIsRight(responseEntity);  //判断服务器返回状态码
+        return responseEntity.getBody();
+    }
+
     private static void serverIsRight(ResponseEntity responseEntity){
         if(responseEntity.getStatusCodeValue()==200){
 //            System.out.println("服务器请求成功：{}"+responseEntity.getStatusCodeValue());
@@ -76,22 +89,6 @@ public class RestUtils {
             System.out.println("服务器请求异常：{}"+responseEntity.getStatusCodeValue());
         }
     }
-
-
-//    public static JSONObject doPostForm(String param,String url){
-//        RestTemplate restTemplate = new RestTemplate();
-//        //设置表单提交
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
-//        map.add("userName", param);
-//        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-//        ResponseEntity<JSONObject> responseEntity = restTemplate.postForEntity(url,request,JSONObject.class);
-//        serverIsRight(responseEntity);  //判断服务器返回状态码
-//        return responseEntity.getBody();
-//    }
-//
-//
 
 
 }

@@ -1,5 +1,6 @@
 package com.tobdev.qywxthird.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tobdev.qywxthird.com.qq.weixin.mp.aes.AesException;
 import com.tobdev.qywxthird.com.qq.weixin.mp.aes.WXBizMsgCrypt;
@@ -16,12 +17,15 @@ import com.tobdev.qywxthird.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -29,6 +33,7 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -178,6 +183,10 @@ public class QywxThirdService {
                     String corpId = authCorpNode.item(0).getTextContent();
                     deleteCompany(corpId);
                     ;
+                    break;
+                case "batch_job_result":
+                    //通讯录id转译异步任务回调  https://open.work.weixin.qq.com/api/doc/90001/90143/91875
+
                     break;
                 default:
                     logger.info(infoType);
@@ -524,6 +533,96 @@ public class QywxThirdService {
         String registerUrl = String.format(qywxThirdConfig.getRegisterUrl(),getRegisterCode());
         return  registerUrl;
     }
+
+    /**
+     *
+     * @param filePath
+     * @return
+     * {
+     *    "errcode": 0,
+     *    "errmsg": ""，
+     *    "type": "image",
+     *    "media_id": "1G6nrLmr5EC3MMb_-zK1dDdzmd0p7cNliYu9V5w7o8K0",
+     *    "created_at": "1380000000"
+     * }
+     *
+     */
+    public Map uploadContact(String filePath){
+
+        //https://open.work.weixin.qq.com/api/doc/90001/90143/91883
+        String providerToken = getProviderToken();
+        String url = String.format(qywxThirdConfig.getContactUploadUrl(),providerToken,"file");
+
+        MultiValueMap<String, Object> params= new LinkedMultiValueMap<>();
+        FileSystemResource resource = new FileSystemResource(new File(filePath));
+        params.add("media",resource);
+        return  RestUtils.upload(url,params);
+
+    }
+
+    /**
+     *
+     * @return
+     * {
+     *     "errcode": 0,
+     *     "errmsg": "ok",
+     *     "jobid": "xxxxx"
+     * }
+     */
+    public Map transContact(String corpId,String mediaId){
+        //https://open.work.weixin.qq.com/api/doc/90001/90143/91846
+        /**
+         * 参数
+         * {
+         *     "auth_corpid": "wwxxxx",
+         *     "media_id_list": ["1G6nrLmr5EC3MMb_-zK1dDdzmd0p7cNliYu9V5w7o8K0"],
+         *     "output_file_name": "学习手册",
+         *     "output_file_format": "pdf"
+         * }
+         */
+        String providerToken = getProviderToken();
+        String url = String.format(qywxThirdConfig.getContactTransUrl(),providerToken);
+
+        JSONObject postJson = new JSONObject();
+        postJson.put("auth_corpid",corpId);
+
+        JSONArray mediaList = new JSONArray();
+        mediaList.add(mediaId);
+        postJson.put("media_id_list",mediaList);
+
+        return  RestUtils.post(url,postJson);
+
+    }
+
+    /**
+     *
+     * @param jobId
+     * @return
+     * {
+     *     "errcode": 0,
+     *     "errmsg": "ok",
+     *     "status": 1,
+     *     "type": "contact_id_translate",
+     *     "result": {
+     *         "contact_id_translate":{
+     *             "url":"xxxx"
+     *         }
+     *     }
+     * }
+     */
+    public Map getTransResult(String jobId){
+        //https://open.work.weixin.qq.com/api/doc/90001/90143/91882
+        /**
+         * id
+         */
+        String corpToken = getProviderToken();
+        String url = String.format(qywxThirdConfig.getTransResultUrl(),corpToken,jobId);
+        Map rs = RestUtils.get(url);
+        rs.put("rs_url",url);
+        return rs;
+
+    }
+
 
 
     //PC网页 sso  用于非企业微信环境下扫码登录，如运行在浏览的器应用后台或者脱离企业微信环境下H5应用
