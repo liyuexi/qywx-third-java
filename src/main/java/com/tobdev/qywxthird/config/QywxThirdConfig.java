@@ -20,27 +20,31 @@ public class QywxThirdConfig {
     private String baseUrl = "https://qyapi.weixin.qq.com/cgi-bin/";
 
     //服务商相关
-    private String servieUrl = baseUrl+"service/";
-    private String suiteTokenUrl = servieUrl+"get_suite_token";
-    private String preAuthCodeUrl = servieUrl+"get_pre_auth_code?suite_access_token=%s";
-    private String permanentCodeUrl = servieUrl+"get_permanent_code?suite_access_token=%s";
-    private String sessionInfoUrl = servieUrl+"set_session_info?suite_access_token=%s";
+    private String serviceUrl = baseUrl+"service/";
+    private String suiteTokenUrl = serviceUrl+"get_suite_token";
+    private String preAuthCodeUrl = serviceUrl+"get_pre_auth_code?suite_access_token=%s";
+    private String permanentCodeUrl = serviceUrl+"get_permanent_code?suite_access_token=%s";
+    private String sessionInfoUrl = serviceUrl+"set_session_info?suite_access_token=%s";
     private String installUrl = "https://open.work.weixin.qq.com/3rdapp/install?suite_id=%s&pre_auth_code=%s&redirect_uri=%s&state=STATE";
 
-    private String providerTokenUlr = servieUrl+"get_provider_token";
-    private String registerCodeUrl = servieUrl+ "get_register_code?provider_access_token=%s";
+    private String providerTokenUlr = serviceUrl+"get_provider_token";
+    private String registerCodeUrl = serviceUrl+ "get_register_code?provider_access_token=%s";
     private String registerUrl =  "https://open.work.weixin.qq.com/3rdservice/wework/register?register_code=%s";
 
 
     private String ssoAuthUrl = "https://open.work.weixin.qq.com/wwopen/sso/3rd_qrConnect?appid=%s&redirect_uri=%s&state=%s&usertype=%s";
-    private String loginInfoUrl = servieUrl+"get_login_info?access_token=%s";
+    private String loginInfoUrl = serviceUrl+"get_login_info?access_token=%s";
+
+    //通讯录转译
+    private String contactUploadUrl = serviceUrl+"media/upload?provider_access_token=%s&type=%s";
+    private String contactTransUrl = serviceUrl + "contact/id_translate?provider_access_token=%s";
+    private String transResultUrl = serviceUrl + "batch/getresult?provider_access_token=%s&jobid=%s";
 
     //公司相关
-    private String corpTokenUrl = servieUrl+"get_corp_token?suite_access_token=%s";
+    private String corpTokenUrl = serviceUrl+"get_corp_token?suite_access_token=%s";
     private String departmentUrl = baseUrl+"department/list?access_token=%s";
     private String userSimplelistUrl = baseUrl+"user/simplelist?access_token=%s&department_id=%s&fetch_child=%s";
     private String userDetailUrl = baseUrl+"user/get?access_token={access_token}&userid={user_id}";
-
 
 
     // H5应用
@@ -51,9 +55,9 @@ public class QywxThirdConfig {
     //https://work.weixin.qq.com/api/doc/90001/90143/91120
     private String oauthUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
     //https://work.weixin.qq.com/api/doc/90001/90143/91121
-    private String oauthUserUrl = servieUrl+"getuserinfo3rd?suite_access_token=%s&code=%s";
+    private String oauthUserUrl = serviceUrl+"getuserinfo3rd?suite_access_token=%s&code=%s";
     //https://work.weixin.qq.com/api/doc/90001/90143/91122
-    private String oauthUserDetailUrl = servieUrl+"getuserdetail3rd?suite_access_token=%s";
+    private String oauthUserDetailUrl = serviceUrl+"getuserdetail3rd?suite_access_token=%s";
     //https://work.weixin.qq.com/api/doc/90001/90144/90539
     private String jsapiTicketUrl = baseUrl+"get_jsapi_ticket?access_token=%s";
     //https://work.weixin.qq.com/api/doc/90001/90144/90539#%E8%8E%B7%E5%8F%96%E5%BA%94%E7%94%A8%E7%9A%84jsapi_ticket
@@ -62,7 +66,10 @@ public class QywxThirdConfig {
     //小程序应用
     //小程序登录流程 https://work.weixin.qq.com/api/doc/90001/90144/92427
     //code2Session https://work.weixin.qq.com/api/doc/90001/90144/92423
-    private String code2sessionUrl = servieUrl+"miniprogram/jscode2session?suite_access_token=%s&js_code=%s&grant_type=authorization_code";
+    private String code2sessionUrl = serviceUrl+"miniprogram/jscode2session?suite_access_token=%s&js_code=%s&grant_type=authorization_code";
+
+
+
 
 
     public String getProviderSecret() {
@@ -208,4 +215,15 @@ public class QywxThirdConfig {
         return jsapiTicketAgentUrl;
     }
 
+    public String getContactUploadUrl() {
+        return contactUploadUrl;
+    }
+
+    public String getContactTransUrl() {
+        return contactTransUrl;
+    }
+
+    public String getTransResultUrl() {
+        return transResultUrl;
+    }
 }
