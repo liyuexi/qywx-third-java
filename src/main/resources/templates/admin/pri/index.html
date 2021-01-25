@@ -17,6 +17,12 @@
     <th align="left" valign="middle">文档</th>
 </tr>
 
+<tr>
+    <td align="left" valivalign="center">企业acess_token</td>
+    <td align="left" valivalign="center"> <div th:text="${access_token}"></div> </td>
+    <td align="left" valivalign="center">  </td>
+</tr>
+
 
 <tr>
     <td align="left" valivalign="center">登录信息</td>
@@ -28,6 +34,18 @@
     <td align="left" valivalign="center">通讯录相关</td>
     <td align="left" valivalign="center">  <a target="_blank" th:href="${contact_url}" th:text="${contact_url}">  </a> </div></td>
     <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90001/90143/90329">https://work.weixin.qq.com/api/doc/90000/90136/90514</a></td>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">客户联系相关</td>
+    <td align="left" valivalign="center">  <a target="_blank" th:href="${extcontact_url}" th:text="${extcontact_url}">  </a> </div></td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90001/90143/92238">文档</a></td>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">消息推送相关</td>
+    <td align="left" valivalign="center">  <a target="_blank" th:href="${message_url}" th:text="${message_url}">  </a> </div></td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90000/90135/90235">文档</a></td>
 </tr>
 
 </table>

@@ -10,6 +10,8 @@ import com.tobdev.qywxthird.config.QywxThirdConfig;
 
 import com.tobdev.qywxthird.model.entity.QywxThirdCompany;
 import com.tobdev.qywxthird.model.entity.QywxThirdUser;
+import com.tobdev.qywxthird.model.xml.MessageReply;
+import com.tobdev.qywxthird.model.xml.MessageText;
 import com.tobdev.qywxthird.service.impl.QywxThirdCompanyServiceImpl;
 
 import com.tobdev.qywxthird.service.impl.QywxThirdUserServiceImpl;
@@ -18,9 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +35,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.StringReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import  com.tobdev.qywxthird.com.qq.weixin.mp.aes.XMLParse;
 
 @Service
 public class QywxThirdService {
@@ -202,12 +198,12 @@ public class QywxThirdService {
     }
 
 
-    public Map dataCallback(String sVerifyMsgSig,String sVerifyTimeStamp,String sVerifyNonce,String sData){
+    public String dataCallback(String sVerifyMsgSig,String sVerifyTimeStamp,String sVerifyNonce,String sData){
 
         String sToken = qywxThirdConfig.getToken();
         String sEncodingAESKey = qywxThirdConfig.getEncodingAESKey();
 
-        Map result = null;
+        String result = "success";
         WXBizMsgCrypt wxcpt = null;
         try {
             /**
@@ -249,29 +245,82 @@ public class QywxThirdService {
             Document document = db.parse(is);
 
             Element root = document.getDocumentElement();
-            NodeList eventNode = root.getElementsByTagName("Event");
-            String event = eventNode.item(0).getTextContent();
-            logger.info(event);
-            switch (event){
-                case "subscribe" :
-                    System.out.println("event: " + event);
-                    break;
-                case "unsubscribe":
-                    System.out.println("event: " + event);
-                    break;
-                default:
-                    logger.info(event);
+
+            //获取消息类型
+            // 如果是事件  <MsgType><![CDATA[event]]></MsgType>
+            //https://open.work.weixin.qq.com/api/doc/90001/90143/90376
+            //如果是成员给应用发送消息  <MsgType><![CDATA[text]]></MsgType> 文本 图片 语音 视频  位置 链接等
+            //https://open.work.weixin.qq.com/api/doc/90001/90143/90375
+            NodeList msgTypeNode = root.getElementsByTagName("MsgType");
+            String msgType = msgTypeNode.item(0).getTextContent();;
+            System.out.println("msgType: " + msgType);
+            if(msgType.equals("event")){
+                NodeList eventNode = root.getElementsByTagName("Event");
+                String event = eventNode.item(0).getTextContent();
+                logger.info(event);
+                switch (event){
+                    case "subscribe" :
+                        System.out.println("event: " + event);
+                        break;
+                    case "unsubscribe":
+                        System.out.println("event: " + event);
+                        break;
+                    case "click":
+                        break;
+                    case "view":
+
+                        String createTime = String.valueOf(System.currentTimeMillis());
+                        String nonce = "sdfsdfsd";
+
+                        //文本消息
+                        MessageText msgText = new MessageText();
+                        msgText.setToUserName("");
+                        msgText.setFromUserName("");
+                        msgText.setCreateTime(createTime);
+                        msgText.setMsgType("text");
+                        msgText.setContent("test");
+                        msgText.setMsgId("111111111111111111");
+                        msgText.setAgentID("");
+                        String msgTextXmlStr = XmlConvertUtils.convertToXml(msgText,"utf-8");
+                        //加密消息xml
+                        result  = wxcpt.EncryptMsg(msgTextXmlStr,createTime,nonce);
+                        break;
+                    default:
+                        logger.info(event);
+                }
+            }else{
+               switch (msgType){
+                   case "text" :
+                       break;
+                   case "image" :
+                       break;
+                   case "voice" :
+                       break;
+                   case "location" :
+                       break;
+                   case "video" :
+                       break;
+                   case "link" :
+                       break;
+               }
             }
         }
         catch(Exception e)
         {
             e.printStackTrace();
             // 加密失败
+            System.out.println(result);
             return result;
         }
+        System.out.println(result);
         return  result;
+
     }
 
+//    private String getSign(String timeStamp,String nonce,String data){
+//        WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(sToken, sEncodingAESKey, sSuiteid);
+//
+//    }
 
     //suite_ticket缓存
     private String setSuitTicket(Element root){
@@ -317,7 +366,6 @@ public class QywxThirdService {
         String result = (String) response.get("suite_access_token");
         return result;
     }
-
 
 
     //********************************** 应用安装   *************************//
@@ -623,6 +671,98 @@ public class QywxThirdService {
 
     }
 
+
+    //获取配置了客户联系功能的成员列表
+    public Map getExtContactFollowUserList(String corpId){
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+        String url = String.format(qywxThirdConfig.getExtContactFollowUserListUrl(),corpToken) ;
+        JSONObject response = RestUtils.get(url);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        return  response;
+
+    }
+
+    //获取指定成员添加的客户列表
+    public Map getExtContactList(String corpId,String userId){
+
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+        String url = String.format(qywxThirdConfig.getExtContactListUrl(),corpToken,userId) ;
+
+        JSONObject response = RestUtils.get(url);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        return  response;
+
+    }
+
+
+    //获取配置过客户群管理的客户群列表。
+    public Map getExtContactGroupchatList(String corpId,String userId){
+
+        //https://open.work.weixin.qq.com/api/doc/90001/90143/93414
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+        String url = String.format(qywxThirdConfig.getExtContactGroupchatUrl(),corpToken) ;
+
+        //分页，预期请求的数据量，取值范围 1 ~ 1000  测试写死1000
+        JSONObject postJson = new JSONObject();
+        //owner_filter  userid_list	否	用户ID列表。最多100个
+        postJson.put("limit",1000);
+        JSONObject response = RestUtils.post(url,postJson);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        return  response;
+
+    }
+
+
+    //消息推送
+    //发送消息
+    public Map sendMessageText(String corpId,String userId,String text){
+
+        //https://open.work.weixin.qq.com/api/doc/90001/90143/93414
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+
+        String url = String.format(qywxThirdConfig.getMessageSendUrl(),corpToken) ;
+        //获取企业的agentid
+        QywxThirdCompany company =  qywxThirdCompanyService.getCompanyByCorpId(corpId);
+        Integer agentId = company.getAgentId();
+
+        JSONObject postJson = new JSONObject();
+        postJson.put("msgtype","text");
+        postJson.put("agentid",agentId);
+
+        JSONObject testJson =  new JSONObject();
+        testJson.put("content",text);
+        postJson.put("text",testJson);
+
+        postJson.put("touser",userId);
+        JSONObject response = RestUtils.post(url,postJson);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        return  response;
+
+    }
+
+    public  String replyMessage(){
+
+//        XStream xstream = new XStream();
+//              '<xml>
+//               <Encrypt><![CDATA[msg_encrypt]]></Encrypt>
+//               <MsgSignature><![CDATA[msg_signature]]></MsgSignature>
+//               <TimeStamp>timestamp</TimeStamp>
+//               <Nonce><![CDATA[nonce]]></Nonce>
+//               </xml>'
+        return  "";
+    }
 
 
     //PC网页 sso  用于非企业微信环境下扫码登录，如运行在浏览的器应用后台或者脱离企业微信环境下H5应用

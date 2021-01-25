@@ -1,0 +1,38 @@
+<html>
+<head>
+    <title></title>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=2.0" />
+    <style>
+        table { border-collapse: collapse;width:99%;table-layout:fixed;word-wrap:break-word;word-break:break-all}
+        table,table tr th, table tr td { border:1px solid #000000; }
+    </style>
+
+</head>
+<body>
+
+<table  align="center"/>
+<caption>消息推送相关</caption>
+<tr>
+    <th align="left" valign="middle">项</th>
+    <th align="left" valign="middle">值/链接</th>
+    <th align="left" valign="middle">文档</th>
+</tr>
+
+
+<tr>
+    <td align="left" valivalign="center">发送文本</td>
+    <td align="left" valivalign="center">  <a target="_blank" th:href="${sendtext_url}" th:text="${sendtext_url}">  </a>  </div></td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90000/90135/90236#%E6%96%87%E6%9C%AC%E6%B6%88%E6%81%AF">文档 </a></td>
+</tr>
+
+
+
+
+
+</table>
+
+<div th:insert="~{contact :: contact}"></div>
+
+
+</body>

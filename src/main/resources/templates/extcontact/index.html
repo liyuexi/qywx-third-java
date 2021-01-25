@@ -1,0 +1,48 @@
+<html>
+<head>
+    <title></title>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=2.0" />
+    <style>
+        table { border-collapse: collapse;width:99%;table-layout:fixed;word-wrap:break-word;word-break:break-all}
+        table,table tr th, table tr td { border:1px solid #000000; }
+    </style>
+
+</head>
+<body>
+
+<table  align="center"/>
+<caption>外部联系人相关</caption>
+<tr>
+    <th align="left" valign="middle">项</th>
+    <th align="left" valign="middle">值/链接</th>
+    <th align="left" valign="middle">文档</th>
+</tr>
+
+
+<tr>
+    <td align="left" valivalign="center">配置了外部联系人的成员</td>
+    <td align="left" valivalign="center">  <a target="_blank" th:href="${follerlist_url}" th:text="${follerlist_url}">  </a>  </div></td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90001/90143/92576">文档 </a></td>
+</tr>
+
+
+<tr>
+    <td align="left" valivalign="center">外部联系人客户列表</td>
+    <td align="left" valivalign="center">  <a target="_blank" th:href="${list_url}" th:text="${list_url}">  </a>  </div></td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90001/90143/92264">文档 </a></td>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">外部联系人客户群</td>
+    <td align="left" valivalign="center">  <a target="_blank" th:href="${grouplist_url}" th:text="${grouplist_url}">  </a>  </div></td>
+    <td align="left" valivalign="center"> <a target="_blank" href="https://open.work.weixin.qq.com/api/doc/90001/90143/93414">文档 </a></td>
+</tr>
+
+
+</table>
+
+<div th:insert="~{contact :: contact}"></div>
+
+
+</body>

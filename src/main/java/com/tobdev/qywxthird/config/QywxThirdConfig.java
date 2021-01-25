@@ -46,6 +46,18 @@ public class QywxThirdConfig {
     private String userSimplelistUrl = baseUrl+"user/simplelist?access_token=%s&department_id=%s&fetch_child=%s";
     private String userDetailUrl = baseUrl+"user/get?access_token={access_token}&userid={user_id}";
 
+    //外部联系人
+
+    //获取配置了客户联系功能的成员列表 https://work.weixin.qq.com/api/doc/90001/90143/92576
+    private String extContactFollowUserListUrl = baseUrl+"externalcontact/get_follow_user_list?access_token=%s";
+    //获取客户列表  https://work.weixin.qq.com/api/doc/90001/90143/92264
+    private  String extContactListUrl = baseUrl+"externalcontact/list?access_token=%s&userid=%s";
+    //获取客户群列表 https://work.weixin.qq.com/api/doc/90001/90143/93414
+    private  String  extContactGroupchatUrl = baseUrl+"externalcontact/groupchat/list?access_token=%s";
+
+    //消息推送
+    private String messageSendUrl= baseUrl+"message/send?access_token=%s";
+
 
     // H5应用
     //scope应用授权作用域。
@@ -67,9 +79,6 @@ public class QywxThirdConfig {
     //小程序登录流程 https://work.weixin.qq.com/api/doc/90001/90144/92427
     //code2Session https://work.weixin.qq.com/api/doc/90001/90144/92423
     private String code2sessionUrl = serviceUrl+"miniprogram/jscode2session?suite_access_token=%s&js_code=%s&grant_type=authorization_code";
-
-
-
 
 
     public String getProviderSecret() {
@@ -225,5 +234,21 @@ public class QywxThirdConfig {
 
     public String getTransResultUrl() {
         return transResultUrl;
+    }
+
+    public String getExtContactFollowUserListUrl() {
+        return extContactFollowUserListUrl;
+    }
+
+    public String getExtContactListUrl() {
+        return extContactListUrl;
+    }
+
+    public String getExtContactGroupchatUrl() {
+        return extContactGroupchatUrl;
+    }
+
+    public String getMessageSendUrl() {
+        return messageSendUrl;
     }
 }

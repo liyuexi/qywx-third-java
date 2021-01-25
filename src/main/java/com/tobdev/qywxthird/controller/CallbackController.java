@@ -72,8 +72,8 @@ public class CallbackController {
         logger.info(body);
         logger.info("数据post回调");
         //处理回调
-        qywxThirdService.dataCallback(sVerifyMsgSig,sVerifyTimeStamp,sVerifyNonce,body);
-        return "success";
+        String result = qywxThirdService.dataCallback(sVerifyMsgSig,sVerifyTimeStamp,sVerifyNonce,body);
+        return result;
     }
 
 

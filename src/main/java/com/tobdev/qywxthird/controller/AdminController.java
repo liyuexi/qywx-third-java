@@ -1,6 +1,8 @@
 package com.tobdev.qywxthird.controller;
 
+import com.tobdev.qywxthird.service.impl.QywxThirdCompanyServiceImpl;
 import com.tobdev.qywxthird.utils.CommonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class AdminController {
+
+    @Autowired
+    private QywxThirdCompanyServiceImpl qywxThirdCompanyService;
 
     @RequestMapping("/admin/index")
     String admin(){
@@ -27,8 +32,17 @@ public class AdminController {
 
         model.put("user_id",userId);
 
+        model.put("access_token",qywxThirdCompanyService.getCorpAccessToken(corpId));
+
         String contactUrl = CommonUtils.RouteToUrl(request,"/contact/index");
         model.put("contact_url",contactUrl);
+
+        String extcontactUrl = CommonUtils.RouteToUrl(request,"/extcontact/index");
+        model.put("extcontact_url",extcontactUrl);
+
+        String messageUrl = CommonUtils.RouteToUrl(request,"/message/index");
+        model.put("message_url",messageUrl);
+
 
         return  "admin/pri/index";
     }

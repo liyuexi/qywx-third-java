@@ -47,6 +47,8 @@ public class H5Controller {
         String oauthRedirectUrl = CommonUtils.RouteToUrl(request,"/h5/oauth_callback");
         String oauthUrl = qywxThirdService.getOauthUrl(oauthRedirectUrl);
         model.put("oauth_url",oauthUrl);
+
+
         return  "h5/index";
     }
 
@@ -99,12 +101,21 @@ public class H5Controller {
 
         model.put("user_id",userId);
 
+        model.put("access_token",qywxThirdCompanyService.getCorpAccessToken(corpId));
+
+
+        String jssdkUrl = CommonUtils.RouteToUrl(request,"/h5/pri/jssdk");
+        model.put("jssdk_url",jssdkUrl);
+
         String contactUrl = CommonUtils.RouteToUrl(request,"/contact/index");
         model.put("contact_url",contactUrl);
 
-        //设置页
-        String jssdkUrl = CommonUtils.RouteToUrl(request,"/h5/pri/jssdk");
-        model.put("jssdk_url",jssdkUrl);
+        String extcontactUrl = CommonUtils.RouteToUrl(request,"/extcontact/index");
+        model.put("extcontact_url",extcontactUrl);
+
+        String messageUrl = CommonUtils.RouteToUrl(request,"/message/index");
+        model.put("message_url",messageUrl);
+
 
         return "h5/pri/index";
 

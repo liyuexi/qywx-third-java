@@ -72,7 +72,6 @@ public class RestUtils {
     }
 
     public static JSONObject upload(String url,MultiValueMap formParams){
-        RestTemplate restTemplate = new RestTemplate();
         //设置表单提交
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
