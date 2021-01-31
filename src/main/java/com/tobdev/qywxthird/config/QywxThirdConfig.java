@@ -58,6 +58,14 @@ public class QywxThirdConfig {
     //消息推送
     private String messageSendUrl= baseUrl+"message/send?access_token=%s";
 
+    //素材管理
+    //https://open.work.weixin.qq.com/api/doc/90001/90143/90389
+    //type	是	媒体文件类型，分别有图片（image）、语音（voice）、视频（video），普通文件（file）
+    private String mediaUploadUrl = baseUrl+"media/upload?access_token=%s&type=%s";
+    private String mediaUploadimgUrl = baseUrl+"media/uploadimg?access_token=%s";
+    private String mediaGetUrl = baseUrl+"media/get?access_token=%s&media_id=%s";
+    private String mediaGetJssdkUrl = baseUrl+"media/get/jssdk?access_token=%s&media_id=%s";
+
 
     // H5应用
     //scope应用授权作用域。
@@ -250,5 +258,21 @@ public class QywxThirdConfig {
 
     public String getMessageSendUrl() {
         return messageSendUrl;
+    }
+
+    public String getMediaUploadUrl() {
+        return mediaUploadUrl;
+    }
+
+    public String getMediaUploadimgUrl() {
+        return mediaUploadimgUrl;
+    }
+
+    public String getMediaGetUrl() {
+        return mediaGetUrl;
+    }
+
+    public String getMediaGetJssdkUrl() {
+        return mediaGetJssdkUrl;
     }
 }

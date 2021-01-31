@@ -43,6 +43,8 @@ public class AdminController {
         String messageUrl = CommonUtils.RouteToUrl(request,"/message/index");
         model.put("message_url",messageUrl);
 
+        String mediaUrl = CommonUtils.RouteToUrl(request,"/media/index");
+        model.put("media_url",mediaUrl);
 
         return  "admin/pri/index";
     }

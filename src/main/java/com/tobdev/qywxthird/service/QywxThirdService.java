@@ -582,6 +582,9 @@ public class QywxThirdService {
         return  registerUrl;
     }
 
+
+
+    //**********************************  通讯录相关   *************************//
     /**
      *
      * @param filePath
@@ -672,6 +675,7 @@ public class QywxThirdService {
     }
 
 
+    //**********************************  客户联系相关   *************************//
     //获取配置了客户联系功能的成员列表
     public Map getExtContactFollowUserList(String corpId){
         String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
@@ -722,6 +726,7 @@ public class QywxThirdService {
     }
 
 
+    //**********************************  消息相关   *************************//
     //消息推送
     //发送消息
     public Map sendMessageText(String corpId,String userId,String text){
@@ -765,6 +770,16 @@ public class QywxThirdService {
     }
 
 
+    //**********************************  素材管理相关   *************************//
+    public  byte[] downloadMedia(String corpId,String mediaId){
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+        String mediaDownloadUrl = String.format(qywxThirdConfig.getMediaGetUrl(),corpToken,mediaId);
+        return RestUtils.dowload(mediaDownloadUrl);
+
+    }
+
+
+    //**********************************  PC相关   *************************//
     //PC网页 sso  用于非企业微信环境下扫码登录，如运行在浏览的器应用后台或者脱离企业微信环境下H5应用
     //https://open.work.weixin.qq.com/wwopen/sso/3rd_qrConnect?appid=ww100000a5f2191&redirect_uri=http%3A%2F%2Fwww.oa.com&state=web_login@gyoss9&usertype=admin
     public  String getSsoUrl(String redirectUrl,String userType){
