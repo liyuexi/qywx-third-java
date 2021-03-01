@@ -16,6 +16,7 @@ public class QywxThirdConfig {
     private String encodingAESKey;
     private Integer authType;
     private String templateId;
+    private String approvalFlowId;
 
     private String baseUrl = "https://qyapi.weixin.qq.com/cgi-bin/";
 
@@ -51,9 +52,9 @@ public class QywxThirdConfig {
     //获取配置了客户联系功能的成员列表 https://work.weixin.qq.com/api/doc/90001/90143/92576
     private String extContactFollowUserListUrl = baseUrl+"externalcontact/get_follow_user_list?access_token=%s";
     //获取客户列表  https://work.weixin.qq.com/api/doc/90001/90143/92264
-    private  String extContactListUrl = baseUrl+"externalcontact/list?access_token=%s&userid=%s";
+    private String extContactListUrl = baseUrl+"externalcontact/list?access_token=%s&userid=%s";
     //获取客户群列表 https://work.weixin.qq.com/api/doc/90001/90143/93414
-    private  String  extContactGroupchatUrl = baseUrl+"externalcontact/groupchat/list?access_token=%s";
+    private String extContactGroupchatUrl = baseUrl+"externalcontact/groupchat/list?access_token=%s";
 
     //消息推送
     private String messageSendUrl= baseUrl+"message/send?access_token=%s";
@@ -65,6 +66,16 @@ public class QywxThirdConfig {
     private String mediaUploadimgUrl = baseUrl+"media/uploadimg?access_token=%s";
     private String mediaGetUrl = baseUrl+"media/get?access_token=%s&media_id=%s";
     private String mediaGetJssdkUrl = baseUrl+"media/get/jssdk?access_token=%s&media_id=%s";
+
+    //审批
+    //审批应用 https://work.weixin.qq.com/api/doc/90001/90143/91956
+    private String oaCopyTemplateUrl ="oa/approval/copytemplate?access_token=%s";
+    private String oaGetTemplateUrl ="/oa/gettemplatedetail?access_token=%s";
+    private String oaApplyEventUrl = "oa/applyevent?access_token=%s";
+    private String oaGetApprovalUrl ="oa/getapprovaldetail?access_token=%s";
+
+    //审批流程引擎 https://work.weixin.qq.com/api/doc/90001/90143/93798
+    private String openApprovalDataUrl = baseUrl+"corp/getopenapprovaldata?access_token=ACCESS_TOKEN";
 
 
     // H5应用
@@ -82,6 +93,25 @@ public class QywxThirdConfig {
     private String jsapiTicketUrl = baseUrl+"get_jsapi_ticket?access_token=%s";
     //https://work.weixin.qq.com/api/doc/90001/90144/90539#%E8%8E%B7%E5%8F%96%E5%BA%94%E7%94%A8%E7%9A%84jsapi_ticket
     private String jsapiTicketAgentUrl = baseUrl+"ticket/get?access_token=%s&type=agent_config";
+
+    //家校沟通
+    //https://open.work.weixin.qq.com/api/doc/90001/90143/92291
+    private String extContactMessageSendUrl = baseUrl+"externalcontact/message/send?access_token=%s";
+
+    //此oauth与H5oauth一致  https://work.weixin.qq.com/api/doc/90001/90143/91861
+    private String schoolOauthUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
+    //https://work.weixin.qq.com/api/doc/90001/90143/91711
+    private String schoolOauthUserUrl = serviceUrl+"getuserinfo3rd?suite_access_token=%s&code=%s";
+
+    private String schoolUrl = baseUrl+"school/";
+    //https://work.weixin.qq.com/api/doc/90001/90143/92038
+    private String schoolUserGetUrl = schoolUrl+"user/get?access_token=%s&userid=%s";
+    //https://work.weixin.qq.com/api/doc/90001/90143/92299
+    private String schoolDepartmentListUrl = schoolUrl+"department/list?access_token=%s&id=%s";
+    //https://work.weixin.qq.com/api/doc/90001/90143/92043
+    private String schoolUserListUrl = schoolUrl+"user/list?access_token=%s&department_id=%s&fetch_child=%s";
+
+
 
     //小程序应用
     //小程序登录流程 https://work.weixin.qq.com/api/doc/90001/90144/92427
@@ -216,6 +246,14 @@ public class QywxThirdConfig {
         this.templateId = templateId;
     }
 
+    public String getApprovalFlowId() {
+        return approvalFlowId;
+    }
+
+    public void setApprovalFlowId(String approvalFlowId) {
+        this.approvalFlowId = approvalFlowId;
+    }
+
     public String getRegisterUrl() {
         return registerUrl;
     }
@@ -274,5 +312,49 @@ public class QywxThirdConfig {
 
     public String getMediaGetJssdkUrl() {
         return mediaGetJssdkUrl;
+    }
+
+    public String getOaCopyTemplateUrl() {
+        return oaCopyTemplateUrl;
+    }
+
+    public String getOaGetTemplateUrl() {
+        return oaGetTemplateUrl;
+    }
+
+    public String getOaApplyEventUrl() {
+        return oaApplyEventUrl;
+    }
+
+    public String getOaGetApprovalUrl() {
+        return oaGetApprovalUrl;
+    }
+
+    public String getOpenApprovalDataUrl() {
+        return openApprovalDataUrl;
+    }
+
+    public String getSchoolOauthUrl() {
+        return schoolOauthUrl;
+    }
+
+    public String getSchoolOauthUserUrl() {
+        return schoolOauthUserUrl;
+    }
+
+    public String getSchoolUserGetUrl() {
+        return schoolUserGetUrl;
+    }
+
+    public String getSchoolDepartmentListUrl() {
+        return schoolDepartmentListUrl;
+    }
+
+    public String getSchoolUserListUrl() {
+        return schoolUserListUrl;
+    }
+
+    public String getExtContactMessageSendUrl() {
+        return extContactMessageSendUrl;
     }
 }

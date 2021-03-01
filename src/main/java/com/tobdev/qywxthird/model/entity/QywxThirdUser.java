@@ -13,6 +13,7 @@ public class QywxThirdUser {
     private Integer status;
     private QywxThirdCompany company;
     private List<QywxThirdDepartment> departmentList;
+    private Integer userType;
 
 
     public String getName() {
@@ -75,6 +76,14 @@ public class QywxThirdUser {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getUserType() {
+        return userType;
+    }
+
+    public void setUserType(Integer userType) {
+        this.userType = userType;
     }
 
     @Override

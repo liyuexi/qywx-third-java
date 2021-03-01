@@ -48,6 +48,10 @@ public class H5Controller {
         String oauthUrl = qywxThirdService.getOauthUrl(oauthRedirectUrl);
         model.put("oauth_url",oauthUrl);
 
+        //没有登录去登录
+        String schoolOauthRedirectUrl = CommonUtils.RouteToUrl(request,"/school/oauth_callback");
+        String schoolOauthUrl = qywxThirdService.getSchoolOauthUrl(schoolOauthRedirectUrl);
+        model.put("school_oauth_url",schoolOauthUrl);
 
         return  "h5/index";
     }
@@ -74,6 +78,7 @@ public class H5Controller {
         QywxThirdUser user = new QywxThirdUser();
         user.setCorpId((String) result.get("corpid"));
         user.setUserId((String) result.get("userid"));
+        user.setUserType(0);
         user.setName((String) result.get("name"));
         user.setAvatar((String) result.get("avatar"));
         String token=  JWTUtils.geneJsonWebToken(user);
@@ -100,6 +105,10 @@ public class H5Controller {
         System.out.println(corpId);
 
         model.put("user_id",userId);
+        model.put("corp_id",corpId);
+
+        model.put("provider_access_token",qywxThirdService.getProviderToken());
+
 
         model.put("access_token",qywxThirdCompanyService.getCorpAccessToken(corpId));
 
@@ -118,6 +127,9 @@ public class H5Controller {
 
         String mediaUrl = CommonUtils.RouteToUrl(request,"/media/index");
         model.put("media_url",mediaUrl);
+
+        String oaUrl = CommonUtils.RouteToUrl(request,"/oa/index");
+        model.put("oa_url",oaUrl);
 
         return "h5/pri/index";
 

@@ -1,5 +1,6 @@
 package com.tobdev.qywxthird.controller;
 
+import com.tobdev.qywxthird.service.QywxThirdService;
 import com.tobdev.qywxthird.service.impl.QywxThirdCompanyServiceImpl;
 import com.tobdev.qywxthird.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ public class AdminController {
 
     @Autowired
     private QywxThirdCompanyServiceImpl qywxThirdCompanyService;
+    @Autowired
+    private QywxThirdService qywxThirdService;
 
     @RequestMapping("/admin/index")
     String admin(){
@@ -31,6 +34,10 @@ public class AdminController {
         System.out.println(corpId);
 
         model.put("user_id",userId);
+        model.put("corp_id",corpId);
+
+        model.put("provider_access_token",qywxThirdService.getProviderToken());
+
 
         model.put("access_token",qywxThirdCompanyService.getCorpAccessToken(corpId));
 

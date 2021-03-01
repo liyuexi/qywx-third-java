@@ -29,9 +29,9 @@
         update `qywx_third_company`
         <trim prefix="set" suffixOverrides=",">
             <if test="permanentCode != null "> permanent_code = #{permanent_code,jdbcType=VARCHAR}, </if>
+        </trim>
         where
         corp_id = #{corp_id,jdbcType=VARCHAR}
-        </trim>
     </update>
 
 

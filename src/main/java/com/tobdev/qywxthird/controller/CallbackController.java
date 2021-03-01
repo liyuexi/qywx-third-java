@@ -21,7 +21,7 @@ public class CallbackController {
     private QywxThirdService qywxThirdService;
 
     @ResponseBody
-    @GetMapping({"/callback/instruct","/callback/data"})
+    @GetMapping({"/callback/instruct","/callback/data","/callback/registerx"})
     String instructGet(@RequestParam(value = "msg_signature") String sVerifyMsgSig,
                        @RequestParam(value = "timestamp") String sVerifyTimeStamp,
                        @RequestParam(value = "nonce") String sVerifyNonce,
@@ -54,8 +54,8 @@ public class CallbackController {
         logger.info(body);
         logger.info("指令post回调");
         //处理回调
-        qywxThirdService.instructCallback(sVerifyMsgSig,sVerifyTimeStamp,sVerifyNonce,body);
-        return "success";
+        String result = qywxThirdService.instructCallback(sVerifyMsgSig,sVerifyTimeStamp,sVerifyNonce,body);
+        return result;
     }
 
     @ResponseBody
@@ -77,6 +77,23 @@ public class CallbackController {
     }
 
 
+    @ResponseBody
+    @PostMapping("/callback/registerx")
+    String registerPost(@RequestParam(value = "msg_signature") String sVerifyMsgSig,
+                        @RequestParam(value = "timestamp") String sVerifyTimeStamp,
+                        @RequestParam(value = "nonce") String sVerifyNonce,
+                        @RequestBody String body
+    ){
+        logger.info("通用开发参数post回调开始");
+        logger.info(sVerifyMsgSig);
+        logger.info(sVerifyTimeStamp);
+        logger.info(sVerifyNonce);
+        logger.info(body);
+        logger.info("通用开发参数post回调");
+        //处理回调
+        qywxThirdService.registerCallback(sVerifyMsgSig,sVerifyTimeStamp,sVerifyNonce,body);
+        return "success";
+    }
 
 
 }

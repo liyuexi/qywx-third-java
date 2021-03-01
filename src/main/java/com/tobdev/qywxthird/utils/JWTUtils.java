@@ -20,6 +20,7 @@ public class JWTUtils {
         String token = Jwts.builder().setSubject(SUBJECT)
                 .claim("corp_id",user.getCorpId())
                 .claim("user_id",user.getUserId())
+                .claim("user_type",user.getUserType())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
                 .signWith(SignatureAlgorithm.HS256,SECRET).compact();

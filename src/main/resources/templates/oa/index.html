@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <script src="//res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="https://open.work.weixin.qq.com/wwopen/js/jwxwork-1.0.0.js"></script>
+
+    <style>
+        table { border-collapse: collapse;width:99%;table-layout:fixed;word-wrap:break-word;word-break:break-all}
+        table,table tr th, table tr td { border:1px solid #000000; }
+    </style>
+
+</head>
+<body>
+
+
+<table  align="center"/>
+
+<caption>审批流程引擎相关</caption>
+<tr>
+    <th align="left" valign="middle">项</th>
+    <th align="left" valign="middle">值/链接</th>
+    <th align="left" valign="middle">文档</th>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">发起审批</td>
+    <td align="left" valivalign="center"><button onclick="approvalApply()">发起</button> </td>
+    <td align="left" valivalign="center">  </td>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">查看审批</td>
+    <td align="left" valivalign="center"><button onclick="approvalDetail()">查看审批</button> </td>
+    <td align="left" valivalign="center">  </td>
+</tr>
+
+
+
+</table>
+
+
+
+
+<script th:inline="javascript">
+
+  //https://work.weixin.qq.com/api/doc/90001/90143/93798
+   function approvalApply(){
+        wx.invoke('thirdPartyOpenPage', {
+            "oaType": "10001",// String   操作类型，目前支持：10001-发起审批；10002-查看审批详情。
+            "templateId": [[${templateId}]],// String 发起审批的模板ID，在第三方应用-审批接口中创建模板可获取。
+            "thirdNo": [[${thirdNo}]],// String //	审批单号，由开发者自行定义，不可重复。
+            "extData": {
+                'fieldList': [{
+                    'title': '采购类型',
+                    'type': 'text',
+                    'value': '市场活动测试',
+                },
+                {
+                    'title': '订单链接',
+                    'type': 'link',
+                    'value': 'https://work.weixin.qq.com',
+                }]
+            },// JSON
+        })
+   }
+
+   function approvalDetail(){
+        wx.invoke('thirdPartyOpenPage', {
+            "oaType": "10001",// String   操作类型，目前支持：10001-发起审批；10002-查看审批详情。
+            "templateId": [[${templateId}]],// String 发起审批的模板ID，在第三方应用-审批接口中创建模板可获取。
+            "thirdNo": [[${thirdNo}]],// String //	审批单号，由开发者自行定义，不可重复。
+            "extData": {
+                'fieldList': [{
+                    'title': '采购类型',
+                    'type': 'text',
+                    'value': 'xxxx',
+                },
+                {
+                    'title': '订单链接',
+                    'type': 'link',
+                    'value': 'https://work.weixin.qq.com',
+                }]
+            },// JSON
+        })
+   }
+
+   wx.config({
+        beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
+        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: [[${signConfig.appId}]], // 必填，企业微信的corpID
+        timestamp: [[${signConfig.timestamp}]], // 必填，生成签名的时间戳
+        nonceStr: [[${signConfig.nonceStr}]], // 必填，生成签名的随机串
+        signature: [[${signConfig.signature}]],// 必填，签名，见 附录-JS-SDK使用权限签名算法
+        jsApiList: ['thirdPartyOpenPage'] // 必填，需要使用的JS接口列表，凡是要调用的接口都需要传进来
+    });
+
+    wx.ready(function(){
+        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+           wx.agentConfig({
+            corpid: [[${signAgentConfig.corpId}]], // 必填，企业微信的corpid，必须与当前登录的企业一致
+            agentid: [[${signAgentConfig.agentId}]], // 必填，企业微信的应用id （e.g. 1000247）
+            timestamp: [[${signAgentConfig.timestamp}]], // 必填，生成签名的时间戳
+            nonceStr: [[${signAgentConfig.nonceStr}]], // 必填，生成签名的随机串
+            signature: [[${signAgentConfig.signature}]],// 必填，签名，见附录-JS-SDK使用权限签名算法
+            jsApiList: ['thirdPartyOpenPage'], //必填
+            success: function(res) {
+                // 回调
+
+            },
+            fail: function(res) {
+                if(res.errMsg.indexOf('function not exist') > -1){
+                    alert('版本过低请升级')
+                }
+            }
+        });
+
+        wx.checkJsApi({
+            jsApiList: ['thirdPartyOpenPage'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+            success: function(res) {
+                 console.log(res);
+                // 以键值对的形式返回，可用的api值true，不可用为false
+                // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+
+            },
+             fail: function(res) {
+
+                 console.log(res)
+             },
+            error: function(res) {
+
+                 console.log(res)
+            },
+        });
+
+    });
+    //步骤四：通过error接口处理失败验证
+    wx.error(function(res){
+        // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+         console.log(res)
+    });
+
+
+
+
+
+</script>
+</body>
+</html>

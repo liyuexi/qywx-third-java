@@ -35,6 +35,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,12 +131,12 @@ public class QywxThirdService {
      * @param sData
      * @return
      */
-    public Map instructCallback(String sVerifyMsgSig,String sVerifyTimeStamp,String sVerifyNonce,String sData){
+    public String instructCallback(String sVerifyMsgSig,String sVerifyTimeStamp,String sVerifyNonce,String sData){
 
         String sToken = qywxThirdConfig.getToken();
         String sSuiteid =qywxThirdConfig.getSuiteId();
         String sEncodingAESKey = qywxThirdConfig.getEncodingAESKey();
-        Map result = null;
+        String result = "error";
         WXBizMsgCrypt wxcpt = null;
         try {
             wxcpt = new WXBizMsgCrypt(sToken, sEncodingAESKey, sSuiteid);
@@ -180,6 +181,11 @@ public class QywxThirdService {
                     deleteCompany(corpId);
                     ;
                     break;
+                case "register_corp":
+                    NodeList stateNode = root.getElementsByTagName("state");
+                    String state = stateNode.item(0).getTextContent();
+                    logger.info("state :"+state);
+                    break;
                 case "batch_job_result":
                     //通讯录id转译异步任务回调  https://open.work.weixin.qq.com/api/doc/90001/90143/91875
 
@@ -194,6 +200,7 @@ public class QywxThirdService {
             // 加密失败
             return result;
         }
+        result = "success";
         return  result;
     }
 
@@ -203,7 +210,7 @@ public class QywxThirdService {
         String sToken = qywxThirdConfig.getToken();
         String sEncodingAESKey = qywxThirdConfig.getEncodingAESKey();
 
-        String result = "success";
+        String result = "error";
         WXBizMsgCrypt wxcpt = null;
         try {
             /**
@@ -265,6 +272,10 @@ public class QywxThirdService {
                     case "unsubscribe":
                         System.out.println("event: " + event);
                         break;
+                    //第三方应用审批状态变化通知回调 https://work.weixin.qq.com/api/doc/90001/90143/93798
+                    case "open_approval_change":
+
+                        break;
                     case "click":
                         break;
                     case "view":
@@ -312,11 +323,70 @@ public class QywxThirdService {
             System.out.println(result);
             return result;
         }
-        System.out.println(result);
+        result = "success";
         return  result;
 
     }
 
+
+    public  String registerCallback(String sVerifyMsgSig,String sVerifyTimeStamp,String sVerifyNonce,String sData){
+        String sToken = qywxThirdConfig.getToken();
+        String sSuiteid =qywxThirdConfig.getSuiteId();
+        String sEncodingAESKey = qywxThirdConfig.getEncodingAESKey();
+        String result = "error";
+        WXBizMsgCrypt wxcpt = null;
+        try {
+            wxcpt = new WXBizMsgCrypt(sToken, sEncodingAESKey, sSuiteid);
+        }catch (AesException E){
+            return result;
+        }
+        try{
+            String sMsg = wxcpt.DecryptMsg(sVerifyMsgSig, sVerifyTimeStamp, sVerifyNonce, sData);
+            System.out.println("after encrypt sEncrytMsg: " + sMsg);
+            // 加密成功
+            // TODO: 解析出明文xml标签的内容进行处理
+            // For example:
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            StringReader sr = new StringReader(sMsg);
+            InputSource is = new InputSource(sr);
+            Document document = db.parse(is);
+
+            Element root = document.getDocumentElement();
+            NodeList infoTypeNode = root.getElementsByTagName("InfoType");
+            String infoType = infoTypeNode.item(0).getTextContent();
+            logger.info(infoType);
+            switch (infoType){
+
+                case "create_auth":
+                    //获取auth_code
+                    NodeList authcodeNode = root.getElementsByTagName("AuthCode");
+                    String authcode = authcodeNode.item(0).getTextContent();
+                    logger.info("auth code:"+authcode);
+                    getPermentCode(authcode);
+                    ;
+                    break;
+
+                case "register_corp":
+                    NodeList stateNode = root.getElementsByTagName("state");
+                    String state = stateNode.item(0).getTextContent();
+                    logger.info("state :"+state);
+                    break;
+
+                default:
+                    logger.info(infoType);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            // 加密失败
+            return result;
+        }
+        result = "success";
+        return  result;
+
+    }
 //    private String getSign(String timeStamp,String nonce,String data){
 //        WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(sToken, sEncodingAESKey, sSuiteid);
 //
@@ -567,6 +637,8 @@ public class QywxThirdService {
 
         JSONObject postJson = new JSONObject();
         postJson.put("template_id",qywxThirdConfig.getTemplateId());
+        postJson.put("state","lyx123456");
+
         JSONObject response = RestUtils.post(url,postJson);
         //获取错误日志
         if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
@@ -778,6 +850,23 @@ public class QywxThirdService {
 
     }
 
+    //**********************************  oa审批相关   *************************//
+
+    //审批流程引擎
+    public Map getApprovalFlow(){
+        Map approval = new HashMap();
+        approval.put("templateId",qywxThirdConfig.getApprovalFlowId());
+        approval.put("thirdNo",new SnowFlakeUtils(0, 0).createOrderNo());
+        return approval;
+    }
+
+    public Map getApprovalFlowStatus(String corpId,String thirdNo){
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+        String approvalUrl = String.format(qywxThirdConfig.getOpenApprovalDataUrl(),corpToken);
+        JSONObject postJson = new JSONObject();
+        postJson.put("thirdNo",thirdNo);
+        return RestUtils.post(approvalUrl,postJson);
+    }
 
     //**********************************  PC相关   *************************//
     //PC网页 sso  用于非企业微信环境下扫码登录，如运行在浏览的器应用后台或者脱离企业微信环境下H5应用
@@ -817,7 +906,7 @@ public class QywxThirdService {
     }
 
     public Map getOauthUser(String code) {
-        logger.info(code);
+
         String suiteToken = getSuiteToken();
 
         //获取访问用户身份
@@ -850,9 +939,7 @@ public class QywxThirdService {
 
         //方法三
         String getOauthUrl = String.format(qywxThirdConfig.getOauthUserUrl(),suiteToken,code);
-        logger.info(getOauthUrl);
         Map  response = RestUtils.get(getOauthUrl);
-        logger.info(response.toString());
         if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
             logger.error(response.toString());
             return  response;
@@ -860,16 +947,10 @@ public class QywxThirdService {
 
         String userTicket = (String) response.get("user_ticket");
         //获取访问用户敏感信息
-        //通过auth code获取公司信息及永久授权码
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
         JSONObject postJson = new JSONObject();
         postJson.put("user_ticket",userTicket);
         String url = String.format(qywxThirdConfig.getOauthUserDetailUrl(),suiteToken);
-        logger.info(url);
-        logger.info(postJson.toJSONString());
         Map detaiResponse = RestUtils.post(url,postJson);
-        logger.info(detaiResponse.toString());
         //获取错误日志
         if(detaiResponse.containsKey("errcode") && (Integer) detaiResponse.get("errcode") != 0){
             logger.error(detaiResponse.toString());
@@ -899,8 +980,8 @@ public class QywxThirdService {
         //https://work.weixin.qq.com/api/doc/90001/90144/90539#%E8%8E%B7%E5%8F%96%E5%BA%94%E7%94%A8%E7%9A%84jsapi_ticket
 
         //获取jsticket
-        String suiteToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
-        String url = String.format(qywxThirdConfig.getJsapiTicketAgentUrl(),suiteToken);
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+        String url = String.format(qywxThirdConfig.getJsapiTicketAgentUrl(),corpToken);
         Map response = RestUtils.get(url);
         //获取错误日志
         if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
@@ -924,6 +1005,172 @@ public class QywxThirdService {
 
     }
 
+    //******************************  家校沟通   *********************//
+    public  String getSchoolOauthUrl(String url){
+
+//        应用授权作用域。
+//        snsapi_base：静默授权，可获取成员的基础信息（UserId与DeviceId）；
+//        snsapi_userinfo：静默授权，可获取成员的详细信息，但不包含手机、邮箱等敏感信息；
+//        snsapi_privateinfo：手动授权，可获取成员的详细信息，包含手机、邮箱等敏感信息（已不再支持获取手机号/邮箱）。
+        String scope = "snsapi_userinfo";
+        String state = "sdfds343";
+        String result = String.format(qywxThirdConfig.getSchoolOauthUrl(),qywxThirdConfig.getSuiteId(),url,scope,state);
+        return  result;
+    }
+
+    public Map getSchoolOauthUser(String code) {
+
+        String suiteToken = getSuiteToken();
+        //获取访问用户身份
+        String getOauthUrl = String.format(qywxThirdConfig.getSchoolOauthUserUrl(),suiteToken,code);
+        Map  response = RestUtils.get(getOauthUrl);
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+            return  response;
+        }
+
+        Map detaiResponse = new HashMap();
+        //家长
+        if(response.containsKey("external_userid")){
+
+
+            //https://work.weixin.qq.com/api/doc/90001/90143/91711
+
+            String coprId = (String) response.get("CorpId");
+            String corpToken = qywxThirdCompanyService.getCorpAccessToken(coprId);
+
+            ArrayList parentsArray = (ArrayList) response.get("parents");
+            if(parentsArray.size()<0){
+                JsonData.buildError("无家长信息");
+            }
+            HashMap parentsMap = (HashMap) parentsArray.get(0);
+            String userId = (String) parentsMap.get("parent_userid");
+            //获取访问用户敏感信息
+            //https://work.weixin.qq.com/api/doc/90001/90143/92038
+            String url = String.format(qywxThirdConfig.getSchoolUserGetUrl(),corpToken,userId);
+             detaiResponse = RestUtils.get(url);
+            //获取错误日志
+            if(detaiResponse.containsKey("errcode") && (Integer) detaiResponse.get("errcode") != 0){
+                logger.error(detaiResponse.toString());
+            }
+
+        }else{
+          //公司成员
+            String userTicket = (String) response.get("user_ticket");
+            //获取访问用户敏感信息
+            JSONObject postJson = new JSONObject();
+            postJson.put("user_ticket",userTicket);
+            String url = String.format(qywxThirdConfig.getOauthUserDetailUrl(),suiteToken);
+             detaiResponse = RestUtils.post(url,postJson);
+            //获取错误日志
+            if(detaiResponse.containsKey("errcode") && (Integer) detaiResponse.get("errcode") != 0){
+                logger.error(detaiResponse.toString());
+            }
+            detaiResponse.put("user_type",0);
+        }
+
+
+
+        /**
+         * 家长
+         {
+         "errcode": 0,
+         "errmsg": "ok",
+         "user_type": 1,
+         "student":{
+         "student_userid": "zhangsan",
+         "name": "张三",
+         "department": [1, 2],
+         "parents":[
+         {
+         "parent_userid": "zhangsan_parent1",
+         "relation": "爸爸",
+         "mobile":"18000000000",
+         "is_subscribe": 1,
+         "external_userid":"xxxxx"
+         },
+         {
+         "parent_userid": "zhangsan_parent2",
+         "relation": "妈妈",
+         "mobile": "18000000001",
+         "is_subscribe": 0
+         }
+         ]
+         },
+         "parent":{
+         "parent_userid": "zhangsan_parent2",
+         "mobile": "18000000003",
+         "is_subscribe": 1,
+         "external_userid":"xxxxx",
+         "children":[
+         {
+         "student_userid": "zhangsan",
+         "relation": "妈妈"
+         },
+         {
+         "student_userid": "lisi",
+         "relation": "伯母"
+         }
+         ]
+         }
+         }
+         */
+
+        return detaiResponse;
+
+    }
+
+    public Map getSchoolDepartmentList(String corpId,String deptId){
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+        String url = String.format(qywxThirdConfig.getSchoolDepartmentListUrl(),corpToken,deptId) ;
+
+        JSONObject response = RestUtils.get(url);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        return  response;
+    }
+
+    public Map getSchoolUserList(String corpId,String deptId,String fetchChild){
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+        String url = String.format(qywxThirdConfig.getSchoolUserListUrl(),corpToken,deptId,fetchChild) ;
+
+        JSONObject response = RestUtils.get(url);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        return  response;
+
+    }
+
+    public Map extContactMessageSend(String corpId,String studentUserid,String text){
+
+        String corpToken = qywxThirdCompanyService.getCorpAccessToken(corpId);
+        String url = String.format(qywxThirdConfig.getExtContactMessageSendUrl(),corpToken) ;
+
+        //获取企业的agentid
+        QywxThirdCompany company =  qywxThirdCompanyService.getCompanyByCorpId(corpId);
+        Integer agentId = company.getAgentId();
+
+        JSONObject postJson = new JSONObject();
+        postJson.put("msgtype","text");
+        postJson.put("agentid",agentId);
+        postJson.put("to_student_userid",studentUserid);
+
+        JSONObject testJson =  new JSONObject();
+        testJson.put("content",text);
+        postJson.put("text",testJson);
+
+        JSONObject response = RestUtils.post(url,postJson);
+        //获取错误日志
+        if(response.containsKey("errcode") && (Integer) response.get("errcode") != 0){
+            logger.error(response.toString());
+        }
+        return  response;
+
+    }
 
     //******************************  小程序应用   *********************//
     public Map getCode2sessionUser(String code){
