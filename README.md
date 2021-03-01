@@ -12,7 +12,7 @@ https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=150336718745193
 
 
 ### 企业微信开发第三方应用开发java版
-最新更新时间：2020/12/04；
+最新更新时间：2021/03/01；
 
 demo基于springboot；
 需要启用redis用于缓存suiteticket等信息；
