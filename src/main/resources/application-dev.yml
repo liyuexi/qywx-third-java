@@ -55,6 +55,8 @@ qywx-third:
     authType: 1
     #推广码id 需先上线
     templateId: ""
+    #审批流程引擎 审批模板id
+    approvalFlowId: ""
 
 qywx-cache:
     keyPrefix: "tobdev-"

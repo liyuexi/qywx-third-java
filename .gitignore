@@ -14,7 +14,8 @@ target/
 logs/
 !.mvn/wrapper/maven-wrapper.jar
 
-##qywx
+###qywx
+dump.rdb
 */application-testh5.yml
 */application-testxcx.yml
 */application-prodh5.yml
