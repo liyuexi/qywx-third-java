@@ -1,4 +1,4 @@
-##友情链接
+## 友情链接
 ToB Dev 李月喜专注B端企业服务开发；  
 加开发同行群及咨询联系"li570467731";   
 获取更多教程及分享关注公众号“tob dev”;  
@@ -10,10 +10,10 @@ ToB Dev 李月喜专注B端企业服务开发；
 企业微信三方应用开发视频教程  
 [第三方应用开发视频](https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=1503367187451936773&__biz=MzA5ODcyODY0Nw==#wechat_redirect) 
 
-##企业微信第三方应用开发java版demo（本仓库）
-###最近更新
-2021/03/01；
-###demo简介
+## 企业微信第三方应用开发java版demo（本仓库）  
+### 最近更新  
+2021/03/01；  
+### demo简介  
 demo为视频教程[企业微信开发之第三方应用开发篇](https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=1503367187451936773&__biz=MzA5ODcyODY0Nw==#wechat_redirect) 
 产出的企业微信第三方应用java springboot版本源码，教程主要内容如下：
 ```
@@ -69,23 +69,23 @@ demo为视频教程[企业微信开发之第三方应用开发篇](https://mp.we
 	补遗及答疑一
 	补遗及答疑二
 ```
-###源码相关
+### 源码相关
 基于java springboot开发；  
 需要启用redis用于缓存suiteticket等信息；   
 需要启用msyql建立数据库及对应的表，用于存储企业,部门,人员等信息；  
-###配置
- ####环境配置
+### 配置
+ #### 环境配置
 - 先配置好环境，初始化数据库，再配置application.yml文件corpid，应用配置等...  
 - 配置好域名，如果是本地调试，配置好内网穿透
 - 回调配置设置回调链接，看加调get验证是否正常，如果正常点刷新ticket  
 - 注意：如是本地调试，ip经常变动，服务商信息里设置好ip白名单，另ticket是十分钟一次如失效或者过期上应用设置里手动刷新即可  
- ####应用配置
+ #### 应用配置
 - 数据回调URL	http://xx.xx.com:9900/callback/data
 - 指令回调URL	http://xx.xx.com:9900/callback/instruct
 - 服务商应用主页（应用安装入口 ）http://域名:端口号/ser/index
 - H5应用（应用安装后）主页 http://域名:端口/front/index
  
-#####库表sql如下
+##### 库表sql如下
 ```sql
 CREATE TABLE `qywx_third_company` (
  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
