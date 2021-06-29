@@ -10,8 +10,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<groupId>com.tobdev</groupId>
+	<artifactId>qywx-third-demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>demo</name>
@@ -124,7 +124,16 @@
 <!--			<artifactId>xstream</artifactId>-->
 <!--			<version>1.4.15</version>-->
 <!--		</dependency>-->
-
+		<!--        Selenium     -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-chrome-driver</artifactId>
+		</dependency>
 
 	</dependencies>
 

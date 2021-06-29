@@ -19,7 +19,12 @@ public class AdminController {
     private QywxThirdService qywxThirdService;
 
     @RequestMapping("/admin/index")
-    String admin(){
+    String admin(HttpServletRequest request, ModelMap model){
+
+        String oauthRedirectUrl = CommonUtils.RouteToUrl(request,"/ser/oauth_callback");
+        String oauthUrl = qywxThirdService.getSsoUrl(oauthRedirectUrl,"admin");
+        model.put("oauth_url",oauthUrl);
+
         return  "admin/index";
     }
 

@@ -23,7 +23,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(h5LoginIntercepter()).addPathPatterns("/*/pri/*","/contact/*","/extcontact/*","/message/*","/media/*","/oa/*","/school/*")
-        .excludePathPatterns("/h5","/h5/index","/front/oauth","/school/oauth_callback");
+        .excludePathPatterns("/h5","/h5/index","/front/oauth","/school/oauth_callback","/contact/qrSync");
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 

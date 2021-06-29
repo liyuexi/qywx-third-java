@@ -3,12 +3,15 @@ package com.tobdev.qywxthird.controller;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSONObject;
 import com.tobdev.qywxthird.model.entity.QywxThirdUser;
+import com.tobdev.qywxthird.model.entity.WechatCorpLogin;
 import com.tobdev.qywxthird.model.excel.QywxContact;
+import com.tobdev.qywxthird.service.QywxThirdLoginService;
 import com.tobdev.qywxthird.service.QywxThirdService;
 import com.tobdev.qywxthird.service.impl.QywxThirdCompanyServiceImpl;
 import com.tobdev.qywxthird.service.impl.QywxThirdUserServiceImpl;
 import com.tobdev.qywxthird.utils.CommonUtils;
 import com.tobdev.qywxthird.utils.RestUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
@@ -21,9 +24,7 @@ import org.springframework.web.util.UriComponents;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 通讯录相关，H5及小程序应用公用
@@ -39,6 +40,10 @@ public class ContactController {
 
     @Autowired
     private QywxThirdUserServiceImpl qywxUserService;
+
+    @Autowired
+    private  QywxThirdLoginService loginService ;
+
 
     @RequestMapping("/contact/index")
     String index(HttpServletRequest request,ModelMap model){
@@ -58,6 +63,10 @@ public class ContactController {
         String transUrl = CommonUtils.RouteToUrl(request,"/contact/trans");
         model.put("trans_url",transUrl);
 
+
+
+        String downloadUrl = CommonUtils.RouteToUrl(request,"/contact/downloadTrans");
+        model.put("donwload_url",downloadUrl);
 
         return  "contact/index";
 
@@ -107,6 +116,7 @@ public class ContactController {
     @RequestMapping("/contact/trans")
     String contactTrans(HttpServletRequest request,ModelMap  model) throws Exception {
         String corpId = (String) request.getAttribute("corp_id");
+
 
         List<QywxContact> list = new ArrayList<QywxContact>();
 
@@ -169,6 +179,7 @@ public class ContactController {
         if((Integer)uploadRs.get("errcode") !=0){
             return "error";
         }
+
         //进行通讯录转译
         String mediaId = (String) uploadRs.get("media_id");
         Map transRs =  qywxThirdService.transContact(corpId,mediaId);
@@ -189,6 +200,12 @@ public class ContactController {
         model.put("job_url",(String)resultRs.get("rs_url"));
         model.put("job_result_url",CommonUtils.RouteToUrl(request,"/contact/transResult?job_id="+jobId));
 
+        model.put("job_result_download_url",CommonUtils.RouteToUrl(request,"/contact/downloadTrans?job_id="+jobId));
+
+        //扫码自动下载
+        String autoLoginUrl = CommonUtils.RouteToUrl(request,"/contact/autoLogin?job_id="+jobId);
+        model.put("autologin_url",autoLoginUrl);
+
         return  "contact/trans";
 
     }
@@ -204,6 +221,72 @@ public class ContactController {
 //        }
         return resultRs;
     }
+
+
+    @PostMapping("/contact/autoLogin")
+    @ResponseBody
+    String autoLogin(HttpServletRequest request,@RequestParam("job_id") String jobId) throws Exception {
+        String corpId = (String) request.getAttribute("corp_id");
+
+
+         return JSONObject.toJSONString(loginService.authLogin(corpId));
+
+
+    }
+
+
+    @RequestMapping("/contact/autoLogin")
+    @ResponseBody
+    Map getAutoLogin(HttpServletRequest request ,@RequestParam("job_id") String jobId) throws Exception {
+        String corpId = (String) request.getAttribute("corp_id");
+
+        //需要匹配公司id
+        Map rs = new HashMap();
+
+        WechatCorpLogin login  = loginService.getAuthLogin(corpId);
+        switch (login.getState()){
+            case 0:
+            {
+
+            }
+            break;
+            case 1:
+            {
+                //提示获取二维码链接成功
+                rs.put("qr_url",login.getLogoUrl());
+
+            }
+            break;
+            case 7:{
+                //需要匹配公司id 获取下载url
+                Map jobUrlRes =  qywxThirdService.getTransResult(jobId);
+                if((Integer)jobUrlRes.get("errcode") !=0){
+
+                }
+               String tranFileUrl =  (String) ( (Map )((Map)jobUrlRes.get("result")).get("contact_id_translate")).get("url");
+                //通过cookie及refer模拟下载转译结果
+                String rootPath = System.getProperty("user.dir");//参数即可获得项目相对路径。
+                String filePath= rootPath + "/qywxcontact" + System.currentTimeMillis() + "trans.xlsx";
+                //
+                String refeUl =  CommonUtils.RouteToUrl(request,"");
+                String fileSavePath =  qywxThirdService.downloadTrans(refeUl,tranFileUrl,filePath,login);
+                rs.put("save_path",fileSavePath);
+
+            }
+            case 9:{
+
+            }
+            break;
+
+        }
+
+        rs.put("state",login.getState());
+
+        return   rs;
+    }
+
+
+
 
 
 

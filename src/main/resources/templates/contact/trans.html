@@ -10,7 +10,9 @@
 
     <script language=javascript>
 
-    　　var interval = self.setInterval("checkTransRs()", 500)
+    　　var interval = self.setInterval("checkTransRs()", 500);
+        var checkLoginInterval ;
+
     　　function checkTransRs() {
 
             //步骤一:创建异步对象
@@ -33,11 +35,74 @@
                           let a = document.getElementById("a_href");
                            a.href = res.result.contact_id_translate.url;
                          window.clearInterval(interval);
+
+                          //设置可扫码自动下载
+                          
+
                     }
 
               　　}
             }
     　　}
+
+
+
+    function checkAutoLogin(){
+
+
+        //步骤一:创建异步对象
+        var ajax = new XMLHttpRequest();
+        //步骤二:设置请求的url参数,参数一是请求的类型,参数二是请求的url,可以带参数,动态的传递参数starName到服务端
+        ajax.open('get', "[[${autologin_url}]]" );
+        //步骤三:发送请求
+        ajax.send();
+        //步骤四:注册事件 onreadystatechange 状态改变就会调用
+        ajax.onreadystatechange = function () {
+           if (ajax.readyState==4 &&ajax.status==200) {
+            //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
+        　　　　  console.log(ajax.responseText);//输入相应的内容
+                 let res = JSON.parse(ajax.responseText);
+                 switch(res.state){
+                        case 1:
+                          //如果获取到登录二维码
+                          let img = document.getElementById("login_qr");
+                          img.src = res.qr_url;
+                         break;
+                        case 7:
+                           alert("登录成功");
+                          //如果获取到登录成功cookie
+                         window.clearInterval(checkLoginInterval);
+                          break;
+                        case 9:
+                            alert("登录失败");
+                           window.clearInterval(checkLoginInterval);
+                        break;
+                }
+          　　}
+        }
+    }
+
+    function startAutoLogin(){
+
+    　
+        alert("开始企业微信扫码自动下载")
+        //步骤一:创建异步对象
+        var ajax = new XMLHttpRequest();
+        //步骤二:设置请求的url参数,参数一是请求的类型,参数二是请求的url,可以带参数,动态的传递参数starName到服务端
+        ajax.open('post', "[[${autologin_url}]]" );
+        //步骤三:发送请求
+        ajax.send();
+        //步骤四:注册事件 onreadystatechange 状态改变就会调用
+        ajax.onreadystatechange = function () {
+           if (ajax.readyState==4 &&ajax.status==200) {
+            //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
+        　　　　  console.log(ajax.responseText);//输入相应的内容
+                 checkLoginInterval =  self.setInterval("checkAutoLogin()", 1500)
+          　}else{
+
+           }
+        }
+    }
 
     </script>
 
@@ -80,8 +145,15 @@
 
 <tr>
     <td align="left" valivalign="center">转译成功后文件下载链接</td>
-    <td align="left" valivalign="center">  <a  id = "a_href"target="_blank" href=""> 点击下载  </a>  </div></td>
+    <td align="left" valivalign="center">  <a  id = "a_href" target="_blank" href=""> 点击下载  </a>  </div></td>
     <td align="left" valivalign="center"> </td>
+</tr>
+
+<tr>
+    <td align="left" valivalign="center">转译文件扫码下载到服务器</td>
+    <td align="left" valivalign="center">  <a   href="javascript:void(0)"  onclick="startAutoLogin()
+" > 点击扫码  </a>  </div></td>
+    <td align="left" valivalign="center"><img   id = "login_qr" /> </td>
 </tr>
 
 

@@ -10,6 +10,7 @@ import com.tobdev.qywxthird.config.QywxThirdConfig;
 
 import com.tobdev.qywxthird.model.entity.QywxThirdCompany;
 import com.tobdev.qywxthird.model.entity.QywxThirdUser;
+import com.tobdev.qywxthird.model.entity.WechatCorpLogin;
 import com.tobdev.qywxthird.model.xml.MessageReply;
 import com.tobdev.qywxthird.model.xml.MessageText;
 import com.tobdev.qywxthird.service.impl.QywxThirdCompanyServiceImpl;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,17 +100,6 @@ public class QywxThirdService {
 		第2，3步可以用企业微信提供的库函数VerifyURL来实现。
 
 		*/
-        // 解析出url上的参数值如下：
-        //String sVerifyMsgSig = "5c45ff5e21c57e6ad56bac8758b79b1d9ac89fd3";
-        //String sVerifyTimeStamp = "1409659589";
-        //String sVerifyNonce = "263014780";
-        //String sVerifyEchoStr = "P9nAzCzyDtyTWESHep1vC5X9xho/qYX3Zpb4yKa9SKld1DsH3Iyt3tP3zNdtp+4RPcs8TgAE7OaBO+FZXvnaqQ==";
-
-        // String sVerifyMsgSig = HttpUtils.ParseUrl("msg_signature");
-        //String sVerifyTimeStamp = "timestamp";
-        //String sVerifyNonce = HttpUtils.ParseUrl("nonce");
-        //String sVerifyEchoStr = HttpUtils.ParseUrl("echostr");
-
         String sEchoStr; //需要返回的明文
         try {
             sEchoStr = wxcpt.VerifyURL(sVerifyMsgSig, sVerifyTimeStamp,
@@ -404,7 +396,7 @@ public class QywxThirdService {
     //suite_ticket获取
     public String getSuitTicket(){
         String result;
-        result = strRedis.get(qywxCacheConfig.getSuitTicket());
+        result = (String) strRedis.get(qywxCacheConfig.getSuitTicket());
         logger.info("get:"+qywxCacheConfig.getSuitTicket()+":"+result);
         if(result==""){
             logger.error("suit_ticket为空");
@@ -440,6 +432,7 @@ public class QywxThirdService {
 
     //********************************** 应用安装   *************************//
     public String getPreAuthCode(){
+
         String result = "";
         String token = getSuiteToken();
         //获取预授权码
@@ -456,6 +449,7 @@ public class QywxThirdService {
             setSessionInfo(result);
         }
         return result;
+
     }
 
 
@@ -744,6 +738,19 @@ public class QywxThirdService {
         rs.put("rs_url",url);
         return rs;
 
+    }
+
+    public String downloadTrans(String rerefeUrl,String downloadUrl,String targetPath,WechatCorpLogin login) throws IOException {
+
+        //通过cookie及refer模拟下载转译结果
+        //设置请求头cookie及refer
+        //指定header
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Referer", rerefeUrl);
+        headers.set("Cookie", login.getCookieSid());
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>( headers);
+        String filePath = RestUtils.download(downloadUrl,targetPath,httpEntity);
+        return filePath;
     }
 
 

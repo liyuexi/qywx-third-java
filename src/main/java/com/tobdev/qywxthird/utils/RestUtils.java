@@ -79,6 +79,17 @@ public class RestUtils {
         return responseEntity.getBody();
     }
 
+    public static String download(String url,String targetPath,HttpEntity<MultiValueMap<String, String>> httpEntity ) throws IOException {
+
+        ResponseEntity<byte[]> rsp = restTemplate.exchange(url, HttpMethod.GET, httpEntity, byte[].class);
+        if(rsp.getStatusCode() != HttpStatus.OK){
+            System.out.println("文件下载请求结果状态码：" + rsp.getStatusCode());
+        }
+        // 将下载下来的文件内容保存到本地
+        Files.write(Paths.get(targetPath), Objects.requireNonNull(rsp.getBody()));
+        return targetPath;
+    }
+
     public static String download(String url,String targetPath) throws IOException {
 
         ResponseEntity<byte[]> rsp = restTemplate.getForEntity(url, byte[].class);

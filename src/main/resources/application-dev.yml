@@ -61,3 +61,5 @@ qywx-third:
 qywx-cache:
     keyPrefix: "tobdev-"
     suitTicket: "suite-ticket"
+    qrLogin: "qywx_login"
+    qrLoginDuration: 600
