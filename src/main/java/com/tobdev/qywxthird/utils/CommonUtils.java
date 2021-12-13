@@ -25,8 +25,8 @@ public class CommonUtils {
 
     public static String RouteToUrl(HttpServletRequest request, String url){
         String routeUrl = "";
-        String port = request.getServerPort()==80 ? "" :  request.getServerPort()+"";
-        routeUrl =  request.getScheme()+"://"+request.getServerName()+":"+port+url;
+        String port = request.getServerPort()==80 ? "" :  ":"+request.getServerPort()+"";
+        routeUrl =  request.getScheme()+"://"+request.getServerName()+port+url;
         return routeUrl;
     }
 
