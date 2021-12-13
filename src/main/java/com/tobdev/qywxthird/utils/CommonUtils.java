@@ -1,5 +1,7 @@
 package com.tobdev.qywxthird.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 
@@ -23,7 +25,8 @@ public class CommonUtils {
 
     public static String RouteToUrl(HttpServletRequest request, String url){
         String routeUrl = "";
-        routeUrl =  request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+url;
+        String port = request.getServerPort()==80 ? "" :  request.getServerPort()+"";
+        routeUrl =  request.getScheme()+"://"+request.getServerName()+":"+port+url;
         return routeUrl;
     }
 

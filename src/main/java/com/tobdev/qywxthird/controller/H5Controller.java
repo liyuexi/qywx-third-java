@@ -40,7 +40,7 @@ public class H5Controller {
         response.sendRedirect("https://tobdev.ant-xy.com");
     }
 
-    @RequestMapping({"/h5/index"})
+    @RequestMapping({"/h5/index","/front/index"})
     String index(HttpServletRequest request, ModelMap model){
         //先判断是否登录
         //没有登录去登录

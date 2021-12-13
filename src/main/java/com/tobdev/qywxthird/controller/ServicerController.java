@@ -111,7 +111,7 @@ public class ServicerController {
 //
     @RequestMapping("/test")
     @ResponseBody
-    String test(){
+    Object test(){
 
         redisUtils.set("xx","dsfdf");
         return redisUtils.get("xx");
