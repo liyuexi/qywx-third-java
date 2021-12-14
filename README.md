@@ -13,8 +13,9 @@ ToB Dev 李月喜专注B端企业服务开发；
 [第三方应用开发视频](https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=1503367187451936773&__biz=MzA5ODcyODY0Nw==#wechat_redirect) 
 
 ## 企业微信第三方应用demo java版  
-### 最近更新  
-2021/03/01；  
+### 在线Demo
+http://tapitest.tobdev.com/ser/index    
+此为服务商网站，进入点授权安装链接，安装即可使用    
 ### demo简介  
 demo为视频教程[企业微信开发之第三方应用开发篇](https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=1503367187451936773&__biz=MzA5ODcyODY0Nw==#wechat_redirect) 
 产出的企业微信第三方应用java springboot版本源码，教程主要内容如下：
