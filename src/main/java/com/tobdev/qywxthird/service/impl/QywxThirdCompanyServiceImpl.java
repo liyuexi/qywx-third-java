@@ -62,7 +62,7 @@ public class QywxThirdCompanyServiceImpl implements QywxThirdCompanyService {
         Integer comResult =   qywxThirdCompanyMapper.deleteCompanyByCorpId(corpId);
 
         //删除部门
-        Boolean deptResult =   qywxThirdDepartmentService.deleteDepartmentByCorpId(corpId);
+        //Boolean deptResult =   qywxThirdDepartmentService.deleteDepartmentByCorpId(corpId);
         //删除人
         Boolean usrResult =   qywxThirdUserService.deleteUserByCorpId(corpId);
 
