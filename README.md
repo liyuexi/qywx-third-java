@@ -70,7 +70,7 @@ demo为视频教程[企业微信开发之第三方应用开发篇](https://mp.we
 需要启用msyql建立数据库及对应的表，用于存储企业及应用等信息；  
 ### 配置
  #### 环境配置
-- 先配置好环境，初始化数据库，再配置application.yml文件corpid，应用配置等...  
+- 先配置好环境，初始化数据库，再配置application.yml文件active,corpid，应用配置等...  
 - 配置好域名，如果是本地调试，配置好内网穿透
 - 回调配置设置回调链接，看加调get验证是否正常，如果正常点刷新ticket  
 - 注意：如是本地调试，ip经常变动，服务商信息里设置好ip白名单，另ticket是十分钟一次如失效或者过期上应用设置里手动刷新即可  
@@ -83,6 +83,11 @@ demo为视频教程[企业微信开发之第三方应用开发篇](https://mp.we
  
 ##### 库表sql如下
 ```sql
+
+CREATE DATABASE  `qywx_third_demo_h5` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'qywx_third_demo_h5'@'%'   IDENTIFIED BY 'qywx_third_demo_h5';
+GRANT ALL ON qywx_third_demo_h5.* TO 'qywx_third_demo_h5'@'%';
+
 CREATE TABLE `qywx_third_company` (
  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
  `corp_id` varchar(45) NOT NULL DEFAULT '' COMMENT '企业id',
@@ -97,7 +102,7 @@ CREATE TABLE `qywx_third_company` (
  `modtime` int(10) unsigned DEFAULT '0' COMMENT '修改时间',
  `rectime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '变动时间',
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='企业微信三方应用授权公司';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COMMENT='企业微信三方应用授权公司';
 
 CREATE TABLE `qywx_third_user` (
  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -122,7 +127,7 @@ CREATE TABLE `qywx_third_user` (
  `modtime` int(10) unsigned DEFAULT '0' COMMENT '修改时间',
  `rectime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '变动时间',
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='企业微信三方应用授权人员';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='企业微信三方应用授权人员';
 
 ```
 
