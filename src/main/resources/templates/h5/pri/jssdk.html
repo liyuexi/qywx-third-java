@@ -54,8 +54,16 @@
     <td align="left" valivalign="center">  需agentconfig  移动端3.0.36及以后版本支持</td>
 </tr>
 
-
-
+<tr>
+    <td align="left" valivalign="center">打开应用管理页面</td>
+    <td align="left" valivalign="center"><button onclick="appSet()">打开应用管理页面</button></td>
+    <td align="left" valivalign="center">  需agentconfig  </td>
+</tr>
+<tr>
+    <td align="left" valivalign="center">打开系统默认浏览器</td>
+    <td align="left" valivalign="center"><button onclick="openBrower()">打开系统默认浏览器</button></td>
+    <td align="left" valivalign="center">   </td>
+</tr>
 
 </table>
 
@@ -160,6 +168,36 @@
              });
     }
 
+    function appSet(){
+        wx.invoke('openAppManage', {}, function(res){
+         if(res.err_msg == "openAppManage:ok") {
+                // 调用成功
+          }
+          if(res.err_msg == "openAppManage:fail:no permission") {
+                // 调用人身份不符合
+          }
+          if(res.err_msg == "openAppManage:fail:unknown app") {
+                // 应用信息获取失败
+          }
+          if(res.err_msg == "openAppManage:fail:unsupported app type") {
+                // 应用类型不符合要求
+          }
+          if(res.err_msg == "openAppManage:fail") {
+                // 其它错误
+          }
+       })
+
+    }
+    function openBrower(){
+        wx.invoke('openDefaultBrowser', {
+           //'url': "https://open.weixin.qq.com/connect/oauth2/authorize?appid=CORPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&agentid=AGENTID&state=STATE#wechat_redirect", // 在默认浏览器打开redirect_uri，并附加code参数；也可以直接指定要打开的url，此时不会附带上code参数。
+           'url': "https://developer.work.weixin.qq.com/document/path/90524#%E6%89%93%E5%BC%80%E7%B3%BB%E7%BB%9F%E9%BB%98%E8%AE%A4%E6%B5%8F%E8%A7%88%E5%99%A8"
+        }, function(res){
+        if(res.err_msg != "openDefaultBrowser:ok"){
+            //错误处理
+                }
+        });
+    }
     wx.config({
         beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
         debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -167,7 +205,7 @@
         timestamp: [[${signConfig.timestamp}]], // 必填，生成签名的时间戳
         nonceStr: [[${signConfig.nonceStr}]], // 必填，生成签名的随机串
         signature: [[${signConfig.signature}]],// 必填，签名，见 附录-JS-SDK使用权限签名算法
-        jsApiList: ['chooseImage','selectExternalContact','openUserProfile','navigateToAddCustomer'] // 必填，需要使用的JS接口列表，凡是要调用的接口都需要传进来
+        jsApiList: ['chooseImage','selectExternalContact','openUserProfile','navigateToAddCustomer','openAppManage'] // 必填，需要使用的JS接口列表，凡是要调用的接口都需要传进来
     });
 
     wx.ready(function(){
@@ -180,7 +218,7 @@
             timestamp: [[${signAgentConfig.timestamp}]], // 必填，生成签名的时间戳
             nonceStr: [[${signAgentConfig.nonceStr}]], // 必填，生成签名的随机串
             signature: [[${signAgentConfig.signature}]],// 必填，签名，见附录-JS-SDK使用权限签名算法
-            jsApiList: ['selectExternalContact','openUserProfile','navigateToAddCustomer'], //必填
+            jsApiList: ['selectExternalContact','openUserProfile','navigateToAddCustomer','openAppManage'], //必填
             success: function(res) {
                 // 回调f
                 alert("agentConfig success");
