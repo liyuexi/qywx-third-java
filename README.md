@@ -3,15 +3,17 @@ ToB Dev 李月喜专注B端企业服务开发；
 加开发同行群及咨询联系"li570467731";   
 获取更多教程及分享关注公众号“tob dev”;  
 
-企业微信开发指南  
-<https://github.com/liyuexi/qywx-guide>  
-<https://gitee.com/liyuexi/qywx-guide>  
-
 企业微信自建内部应用开发视频教程  
-[自建内部应用开发视频](https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzA5ODcyODY0Nw==&action=getalbum&album_id=1745513894715916289#wechat_redirect)  
+自建内部应用视频教程：  
+https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzA5ODcyODY0Nw==&action=getalbum&album_id=1745513894715916289#wechat_redirect    
+https://ke.qq.com/course/4159768  
+自建代开发视频教程：  
+https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzA5ODcyODY0Nw==&action=getalbum&album_id=2167362871330930690#wechat_redirect  
+https://ke.qq.com/course/5411662  
 企业微信三方应用开发视频教程  
-[第三方应用开发视频](https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=1503367187451936773&__biz=MzA5ODcyODY0Nw==#wechat_redirect) 
-
+https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=1503367187451936773&__biz=MzA5ODcyODY0Nw==#wechat_redirect  
+https://ke.qq.com/course/3383131  
+  
 ## 企业微信第三方应用demo java版  
 ### 在线Demo
 http://tapitest.tobdev.com/ser/index    
