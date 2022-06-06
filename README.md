@@ -10,11 +10,12 @@ https://ke.qq.com/course/4159768
 自建代开发视频教程：  
 https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzA5ODcyODY0Nw==&action=getalbum&album_id=2167362871330930690#wechat_redirect  
 https://ke.qq.com/course/5411662  
-企业微信三方应用开发视频教程  
-https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=1503367187451936773&__biz=MzA5ODcyODY0Nw==#wechat_redirect  
-https://ke.qq.com/course/3383131  
   
 ## 企业微信第三方应用demo java版  
+企业微信三方应用开发视频教程  
+https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&album_id=1503367187451936773&__biz=MzA5ODcyODY0Nw==#wechat_redirect  
+https://ke.qq.com/course/3383131 
+
 ### 在线Demo
 http://tapitest.tobdev.com/ser/index    
 此为服务商网站，进入点授权安装链接，安装即可使用    
